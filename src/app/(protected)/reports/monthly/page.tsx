@@ -1,0 +1,205 @@
+"use client";
+
+import { useState, useEffect, useCallback } from "react";
+import Link from "next/link";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, PieChart, Pie, Cell } from "recharts";
+import { getCategoryIcon } from "@/lib/icons";
+
+interface MonthlyData {
+  month: number;
+  year: number;
+  totalSeconds: number;
+  totalSessions: number;
+  longestSession: number;
+  avgDailyTracked: number;
+  daysInMonth: number;
+  dailyTotals: Array<{ date: string; seconds: number }>;
+  categoryTotals: Array<{
+    categoryId: string;
+    name: string;
+    color: string;
+    seconds: number;
+  }>;
+}
+
+export default function MonthlyReportPage() {
+  const [data, setData] = useState<MonthlyData | null>(null);
+  const [selectedDate, setSelectedDate] = useState(() => new Date().toISOString().split("T")[0]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchReport = useCallback(async () => {
+    setLoading(true);
+    try {
+      const d = new Date(selectedDate);
+      const month = d.getMonth();
+      const res = await fetch(`/api/reports/monthly?date=${selectedDate}&month=${month}`);
+      const json = await res.json();
+      if (json.success) setData(json.data);
+    } catch {
+      // silent
+    } finally {
+      setLoading(false);
+    }
+  }, [selectedDate]);
+
+  useEffect(() => { fetchReport(); }, [fetchReport]);
+
+  function formatTime(s: number): string {
+    const h = Math.floor(s / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    return `${h}h ${m}m`;
+  }
+
+  function formatTimeFull(s: number): string {
+    const h = Math.floor(s / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    return `${String(h).padStart(2, "0")}h ${String(m).padStart(2, "0")}m`;
+  }
+
+  function changeMonth(delta: number) {
+    const d = new Date(selectedDate);
+    d.setMonth(d.getMonth() + delta);
+    setSelectedDate(d.toISOString().split("T")[0]);
+  }
+
+  const monthName = data
+    ? new Date(data.year, data.month).toLocaleDateString("en-US", { month: "long", year: "numeric" })
+    : "";
+
+  const barData = data?.dailyTotals.map((d) => ({
+    name: new Date(d.date + "T00:00:00").getDate().toString(),
+    hours: Math.round((d.seconds / 3600) * 10) / 10,
+  })) || [];
+
+  const pieData = data?.categoryTotals.map((ct) => ({
+    name: ct.name,
+    value: ct.seconds,
+    color: ct.color,
+  })) || [];
+
+  const COLORS = ["#ffffff", "#a1a1aa", "#71717a", "#52525b", "#3f3f46", "#27272a"];
+
+  return (
+    <div className="p-6 max-w-5xl mx-auto">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-xl font-bold">Monthly Report</h1>
+          <p className="text-sm text-zinc-500">{monthName}</p>
+        </div>
+        <Link href="/reports/daily" className="text-sm text-zinc-400 hover:text-white transition-colors">
+          ← Daily
+        </Link>
+      </div>
+
+      <div className="flex items-center gap-4 mb-6">
+        <button onClick={() => changeMonth(-1)} className="px-3 py-1.5 bg-zinc-900 border border-zinc-800 rounded-lg text-sm hover:bg-zinc-800 transition-colors">← Prev</button>
+        <button onClick={() => changeMonth(1)} className="px-3 py-1.5 bg-zinc-900 border border-zinc-800 rounded-lg text-sm hover:bg-zinc-800 transition-colors">Next →</button>
+        <button onClick={() => setSelectedDate(new Date().toISOString().split("T")[0])} className="px-3 py-1.5 bg-zinc-800 rounded-lg text-sm hover:bg-zinc-700 transition-colors">This Month</button>
+      </div>
+
+      {loading ? (
+        <div className="text-zinc-500 text-sm py-12 text-center">Loading...</div>
+      ) : !data ? (
+        <div className="text-zinc-500 text-sm py-12 text-center">No data</div>
+      ) : (
+        <div className="space-y-6">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {[
+              { label: "Total Tracked", value: formatTimeFull(data.totalSeconds) },
+              { label: "Sessions", value: data.totalSessions.toString() },
+              { label: "Avg Daily", value: formatTime(data.avgDailyTracked) },
+              { label: "Longest Session", value: formatTime(data.longestSession) },
+            ].map((stat) => (
+              <div key={stat.label} className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
+                <div className="text-xs text-zinc-500 uppercase tracking-wide mb-1">{stat.label}</div>
+                <div className="text-xl font-bold font-mono">{stat.value}</div>
+              </div>
+            ))}
+          </div>
+
+          {barData.length > 0 && (
+            <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
+              <h3 className="text-sm font-medium text-zinc-400 mb-4 uppercase tracking-wide">Daily Hours</h3>
+              <ResponsiveContainer width="100%" height={250}>
+                <BarChart data={barData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
+                  <XAxis dataKey="name" tick={{ fill: "#a1a1aa", fontSize: 10 }} />
+                  <YAxis tick={{ fill: "#a1a1aa", fontSize: 12 }} />
+                  <Tooltip
+                    contentStyle={{ backgroundColor: "#18181b", border: "1px solid #27272a", borderRadius: "8px", fontSize: "12px" }}
+                    formatter={(value) => [`${value}h`, "Hours"]}
+                  />
+                  <Bar dataKey="hours" fill="#ffffff" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+
+          {pieData.length > 0 && (
+            <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
+              <h3 className="text-sm font-medium text-zinc-400 mb-4 uppercase tracking-wide">Category Distribution</h3>
+              <div className="flex items-center gap-8">
+                <ResponsiveContainer width="50%" height={250}>
+                  <PieChart>
+                    <Pie
+                      data={pieData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={100}
+                      paddingAngle={2}
+                      dataKey="value"
+                    >
+                      {pieData.map((_, index) => (
+                        <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip
+                      contentStyle={{ backgroundColor: "#18181b", border: "1px solid #27272a", borderRadius: "8px", fontSize: "12px" }}
+                      formatter={(value) => [formatTime(Number(value))]}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+                <div className="space-y-2">
+                  {data.categoryTotals.map((ct, i) => (
+                    <div key={ct.categoryId} className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
+                      <span className="text-sm">{ct.name}</span>
+                      <span className="text-sm text-zinc-400 font-mono ml-auto">{formatTime(ct.seconds)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {data.categoryTotals.length > 0 && (
+            <div className="bg-zinc-900 border border-zinc-800 rounded-xl divide-y divide-zinc-800">
+              {data.categoryTotals.map((ct) => {
+                const pct = data.totalSeconds > 0 ? (ct.seconds / data.totalSeconds * 100).toFixed(1) : "0";
+                const CtIcon = getCategoryIcon(ct.name);
+                return (
+                  <div key={ct.categoryId} className="flex items-center justify-between px-4 py-3">
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0"
+                        style={{ backgroundColor: ct.color + "20" }}
+                      >
+                        <CtIcon size={14} style={{ color: ct.color }} />
+                      </div>
+                      <span className="text-sm">{ct.name}</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs text-zinc-500">{pct}%</span>
+                      <span className="text-sm font-mono text-zinc-300">{formatTime(ct.seconds)}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
