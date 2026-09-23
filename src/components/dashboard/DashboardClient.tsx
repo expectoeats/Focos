@@ -330,7 +330,7 @@ export default function DashboardClient() {
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-4 md:p-6 max-w-7xl mx-auto">
       {error && (
         <div className="mb-4 bg-red-500/10 border border-red-500/20 text-red-400 text-sm rounded-lg px-4 py-3">
           {error}
@@ -338,20 +338,20 @@ export default function DashboardClient() {
         </div>
       )}
 
-      <div className="flex items-center justify-between mb-6">
-        <div>
+      <div className="flex items-center justify-between mb-6 gap-4">
+        <div className="min-w-0">
           <h1 className="text-xl font-bold">Dashboard</h1>
-          <p className="text-sm text-zinc-500">Where did you spend your time today?</p>
+          <p className="text-sm text-zinc-500 truncate">Where did you spend your time today?</p>
         </div>
-        <div className="text-right">
+        <div className="text-right flex-shrink-0">
           <div className="text-xs text-zinc-500 uppercase tracking-wide">Today&apos;s Total</div>
-          <div className="text-2xl font-bold font-mono tabular-nums">{formatTime(totalToday)}</div>
+          <div className="text-xl md:text-2xl font-bold font-mono tabular-nums">{formatTime(totalToday)}</div>
         </div>
       </div>
 
       {activeSession && ActiveIcon && (
-        <div className="mb-6 bg-zinc-900 border border-zinc-800 rounded-xl p-5">
-          <div className="flex items-center justify-between">
+        <div className="mb-6 bg-zinc-900 border border-zinc-800 rounded-xl p-4 md:p-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <div
                 className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
@@ -359,13 +359,13 @@ export default function DashboardClient() {
               >
                 <ActiveIcon size={20} style={{ color: activeSession.categoryId?.color || "#64748B" }} />
               </div>
-              <div>
+              <div className="min-w-0">
                 <div className="text-xs text-zinc-500 uppercase tracking-wide">Now Tracking</div>
-                <div className="text-lg font-semibold">{activeSession.categoryId?.name || "Unknown"}</div>
+                <div className="text-lg font-semibold truncate">{activeSession.categoryId?.name || "Unknown"}</div>
               </div>
             </div>
-            <div className="flex items-center gap-6">
-              <div className="text-right">
+            <div className="flex items-center justify-between sm:justify-end gap-4 sm:gap-6">
+              <div className="sm:text-right">
                 <div className="text-3xl font-bold font-mono tabular-nums text-white">
                   {formatTimer(elapsedSeconds)}
                 </div>
@@ -376,7 +376,7 @@ export default function DashboardClient() {
               <button
                 onClick={() => handleStop(activeSession._id)}
                 disabled={stoppingId === activeSession._id}
-                className="px-5 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50"
+                className="px-5 py-2.5 bg-red-600 hover:bg-red-500 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 shadow-sm shadow-red-600/30 flex-shrink-0"
               >
                 {stoppingId === activeSession._id ? "Stopping..." : "STOP"}
               </button>
@@ -387,7 +387,7 @@ export default function DashboardClient() {
 
       <div className="mb-6">
         <h2 className="text-sm font-medium text-zinc-400 mb-3 uppercase tracking-wide">Categories</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 md:gap-3">
           {categories.map((cat) => {
             const isActive = activeSession?.categoryId?._id === cat._id;
             const time = getCategoryTime(cat._id);

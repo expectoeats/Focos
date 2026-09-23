@@ -121,10 +121,10 @@ export default function SettingsPage() {
     setCategories((prev) => prev.filter((c) => c._id !== catId));
   }
 
-  if (loading) return <div className="p-6 text-zinc-500 text-sm">Loading...</div>;
+  if (loading) return <div className="p-4 md:p-6 text-zinc-500 text-sm">Loading...</div>;
 
   return (
-    <div className="p-6 max-w-3xl mx-auto space-y-8">
+    <div className="p-4 md:p-6 max-w-3xl mx-auto space-y-8">
       <div>
         <h1 className="text-xl font-bold mb-1">Settings</h1>
         <p className="text-sm text-zinc-500">Manage your profile, categories, and goals</p>
@@ -170,8 +170,8 @@ export default function SettingsPage() {
           <button onClick={() => setShowAddCategory(!showAddCategory)} className="text-xs text-zinc-400 hover:text-white transition-colors">+ Add Category</button>
         </div>
         {showAddCategory && (
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 mb-3 flex items-end gap-3">
-            <div className="flex-1">
+          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 mb-3 flex flex-wrap items-end gap-3">
+            <div className="flex-1 min-w-[150px]">
               <label className="block text-xs text-zinc-500 mb-1">Name</label>
               <input value={newCatName} onChange={(e) => setNewCatName(e.target.value)} className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-zinc-500" />
             </div>
@@ -198,8 +198,8 @@ export default function SettingsPage() {
       <section>
         <h2 className="text-sm font-medium text-zinc-400 uppercase tracking-wide mb-3">Daily Goals</h2>
         <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 mb-3">
-          <div className="flex items-end gap-3">
-            <div className="flex-1">
+          <div className="flex flex-wrap items-end gap-3">
+            <div className="flex-1 min-w-[160px]">
               <label className="block text-xs text-zinc-500 mb-1">Category</label>
               <select value={goalCategoryId} onChange={(e) => setGoalCategoryId(e.target.value)} className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-zinc-500">
                 <option value="">Select category</option>

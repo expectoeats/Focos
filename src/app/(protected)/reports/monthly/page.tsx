@@ -80,7 +80,7 @@ export default function MonthlyReportPage() {
   const COLORS = ["#ffffff", "#a1a1aa", "#71717a", "#52525b", "#3f3f46", "#27272a"];
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
+    <div className="p-4 md:p-6 max-w-5xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-xl font-bold">Monthly Report</h1>
@@ -91,7 +91,7 @@ export default function MonthlyReportPage() {
         </Link>
       </div>
 
-      <div className="flex items-center gap-4 mb-6">
+      <div className="flex items-center gap-2 md:gap-4 mb-6 flex-wrap">
         <button onClick={() => changeMonth(-1)} className="px-3 py-1.5 bg-zinc-900 border border-zinc-800 rounded-lg text-sm hover:bg-zinc-800 transition-colors">← Prev</button>
         <button onClick={() => changeMonth(1)} className="px-3 py-1.5 bg-zinc-900 border border-zinc-800 rounded-lg text-sm hover:bg-zinc-800 transition-colors">Next →</button>
         <button onClick={() => setSelectedDate(new Date().toISOString().split("T")[0])} className="px-3 py-1.5 bg-zinc-800 rounded-lg text-sm hover:bg-zinc-700 transition-colors">This Month</button>
@@ -138,9 +138,10 @@ export default function MonthlyReportPage() {
           {pieData.length > 0 && (
             <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
               <h3 className="text-sm font-medium text-zinc-400 mb-4 uppercase tracking-wide">Category Distribution</h3>
-              <div className="flex items-center gap-8">
-                <ResponsiveContainer width="50%" height={250}>
-                  <PieChart>
+              <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
+                <div className="w-full md:w-1/2">
+                  <ResponsiveContainer width="100%" height={250}>
+                    <PieChart>
                     <Pie
                       data={pieData}
                       cx="50%"
@@ -160,7 +161,8 @@ export default function MonthlyReportPage() {
                     />
                   </PieChart>
                 </ResponsiveContainer>
-                <div className="space-y-2">
+                </div>
+                <div className="space-y-2 w-full md:w-1/2">
                   {data.categoryTotals.map((ct, i) => (
                     <div key={ct.categoryId} className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />

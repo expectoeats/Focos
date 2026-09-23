@@ -69,7 +69,7 @@ export default function WeeklyReportPage() {
   })) || [];
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
+    <div className="p-4 md:p-6 max-w-5xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-xl font-bold">Weekly Report</h1>
@@ -82,7 +82,7 @@ export default function WeeklyReportPage() {
         </Link>
       </div>
 
-      <div className="flex items-center gap-4 mb-6">
+      <div className="flex items-center gap-2 md:gap-4 mb-6 flex-wrap">
         <button onClick={() => changeDate(-1)} className="px-3 py-1.5 bg-zinc-900 border border-zinc-800 rounded-lg text-sm hover:bg-zinc-800 transition-colors">← Prev Week</button>
         <input
           type="date"
