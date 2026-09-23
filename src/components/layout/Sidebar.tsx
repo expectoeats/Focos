@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
+import InstallPwaButton from "@/components/InstallPwaButton";
 
 const navItems = [
   { label: "Dashboard", href: "/dashboard", icon: "◉" },
+  { label: "Goals & Reality", href: "/goals", icon: "🎯" },
   { label: "Reports", href: "/reports/daily", icon: "◧" },
   { label: "Diagnostic", href: "/diagnostic", icon: "◫" },
   { label: "Settings", href: "/settings", icon: "⚙" },
@@ -72,7 +74,8 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
         })}
       </nav>
 
-      <div className="p-3 border-t border-zinc-800">
+      <div className="p-3 border-t border-zinc-800 space-y-2">
+        <InstallPwaButton />
         <button
           onClick={handleLogout}
           disabled={loggingOut}

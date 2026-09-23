@@ -24,6 +24,13 @@ export async function GET() {
         name: user.name,
         email: user.email,
         timezone: user.timezone,
+        profileContext: user.profileContext || {
+          age: null,
+          runway: "",
+          currentSituation: "",
+          coreWeaknesses: "",
+          worstCaseFear: "",
+        },
       },
     });
   } catch (error) {
@@ -34,6 +41,15 @@ export async function GET() {
 const updateProfileSchema = z.object({
   name: z.string().min(2).max(100).optional(),
   timezone: z.string().optional(),
+  profileContext: z
+    .object({
+      age: z.union([z.number(), z.null(), z.string().transform((v) => (v ? Number(v) : null))]).optional(),
+      runway: z.string().optional(),
+      currentSituation: z.string().optional(),
+      coreWeaknesses: z.string().optional(),
+      worstCaseFear: z.string().optional(),
+    })
+    .optional(),
 });
 
 export async function PATCH(request: Request) {
@@ -51,9 +67,16 @@ export async function PATCH(request: Request) {
 
     await connectDB();
 
+    const updatePayload: Record<string, unknown> = {};
+    if (parsed.data.name !== undefined) updatePayload.name = parsed.data.name;
+    if (parsed.data.timezone !== undefined) updatePayload.timezone = parsed.data.timezone;
+    if (parsed.data.profileContext !== undefined) {
+      updatePayload.profileContext = parsed.data.profileContext;
+    }
+
     const user = await User.findByIdAndUpdate(
       authUser.userId,
-      { $set: parsed.data },
+      { $set: updatePayload },
       { new: true }
     );
 
@@ -67,6 +90,7 @@ export async function PATCH(request: Request) {
         name: user.name,
         email: user.email,
         timezone: user.timezone,
+        profileContext: user.profileContext,
       },
     });
   } catch (error) {

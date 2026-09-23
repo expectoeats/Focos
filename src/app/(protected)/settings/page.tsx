@@ -2,11 +2,20 @@
 
 import { useState, useEffect } from "react";
 
+interface ProfileContext {
+  age?: number | null;
+  runway?: string;
+  currentSituation?: string;
+  coreWeaknesses?: string;
+  worstCaseFear?: string;
+}
+
 interface User {
   id: string;
   name: string;
   email: string;
   timezone: string;
+  profileContext?: ProfileContext;
 }
 
 interface Goal {
@@ -30,6 +39,11 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false);
   const [name, setName] = useState("");
   const [timezone, setTimezone] = useState("");
+  const [age, setAge] = useState<string>("");
+  const [runway, setRunway] = useState("");
+  const [currentSituation, setCurrentSituation] = useState("");
+  const [coreWeaknesses, setCoreWeaknesses] = useState("");
+  const [worstCaseFear, setWorstCaseFear] = useState("");
   const [goalCategoryId, setGoalCategoryId] = useState("");
   const [goalMinutes, setGoalMinutes] = useState("");
   const [message, setMessage] = useState("");
@@ -47,6 +61,14 @@ export default function SettingsPage() {
         setUser(meData.data.user);
         setName(meData.data.user.name);
         setTimezone(meData.data.user.timezone);
+        if (meData.data.user.profileContext) {
+          const pc = meData.data.user.profileContext;
+          if (pc.age) setAge(String(pc.age));
+          if (pc.runway) setRunway(pc.runway);
+          if (pc.currentSituation) setCurrentSituation(pc.currentSituation);
+          if (pc.coreWeaknesses) setCoreWeaknesses(pc.coreWeaknesses);
+          if (pc.worstCaseFear) setWorstCaseFear(pc.worstCaseFear);
+        }
       }
       if (goalsData.success) setGoals(goalsData.data.goals);
       if (catsData.success) setCategories(catsData.data.categories);
@@ -60,11 +82,21 @@ export default function SettingsPage() {
       const res = await fetch("/api/auth/me", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, timezone }),
+        body: JSON.stringify({
+          name,
+          timezone,
+          profileContext: {
+            age: age ? parseInt(age) : null,
+            runway,
+            currentSituation,
+            coreWeaknesses,
+            worstCaseFear,
+          },
+        }),
       });
       const data = await res.json();
       if (data.success) {
-        setMessage("Profile updated");
+        setMessage("Profile & Reality Context updated successfully!");
         setUser(data.data.user);
       } else {
         setMessage(data.error.message);
@@ -158,8 +190,87 @@ export default function SettingsPage() {
               <option value="Australia/Sydney">Australia/Sydney (AEST)</option>
             </select>
           </div>
-          <button onClick={handleSaveProfile} disabled={saving} className="px-4 py-2 bg-white text-black text-sm font-medium rounded-lg hover:bg-zinc-200 disabled:opacity-50 transition-colors">
-            {saving ? "Saving..." : "Save Profile"}
+          <div className="pt-4 border-t border-zinc-800">
+            <div className="mb-4">
+              <h3 className="text-sm font-semibold text-rose-400 flex items-center gap-2">
+                <span>🔥</span> Personal Reality & Context (For AI Future Mirror)
+              </h3>
+              <p className="text-xs text-zinc-400 mt-1">
+                AI in information ko aapke task notes ke saath analyze karke aapka harsh future projection aur reality check banayega.
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-medium text-zinc-300 mb-1">
+                    Current Age
+                  </label>
+                  <input
+                    type="number"
+                    value={age}
+                    onChange={(e) => setAge(e.target.value)}
+                    placeholder="e.g. 24"
+                    className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-rose-500"
+                  />
+                  <p className="text-[11px] text-zinc-500 mt-1">Isse AI aapka 5-year future age calculate karega</p>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-zinc-300 mb-1">
+                    Runway / Time Left
+                  </label>
+                  <input
+                    value={runway}
+                    onChange={(e) => setRunway(e.target.value)}
+                    placeholder="e.g. 8 months savings left, 1 year before job search"
+                    className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-rose-500"
+                  />
+                  <p className="text-[11px] text-zinc-500 mt-1">Aapke paas fail hone ke liye kitna time bacha hai</p>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-zinc-300 mb-1">
+                  Current Situation & Liabilities
+                </label>
+                <input
+                  value={currentSituation}
+                  onChange={(e) => setCurrentSituation(e.target.value)}
+                  placeholder="e.g. Living with parents, high expectations, unemployed or stuck in dead-end work"
+                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-rose-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-zinc-300 mb-1">
+                  Core Weaknesses & Bad Habits
+                </label>
+                <input
+                  value={coreWeaknesses}
+                  onChange={(e) => setCoreWeaknesses(e.target.value)}
+                  placeholder="e.g. Phone scrolling at night, starting projects but leaving them unfinished, low discipline"
+                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-rose-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-zinc-300 mb-1">
+                  Worst-Case Fear (Agar fail hue toh kya anjaam hoga?)
+                </label>
+                <textarea
+                  value={worstCaseFear}
+                  onChange={(e) => setWorstCaseFear(e.target.value)}
+                  rows={2}
+                  placeholder="e.g. Parents ke sapne toot jayenge, khud ke kharche nahi utha paunga, poori life regret aur mediocrity me nikal jayegi"
+                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-rose-500"
+                />
+              </div>
+            </div>
+          </div>
+
+          <button onClick={handleSaveProfile} disabled={saving} className="px-5 py-2.5 bg-white text-black text-sm font-semibold rounded-lg hover:bg-zinc-200 disabled:opacity-50 transition-colors shadow-md">
+            {saving ? "Saving Profile..." : "Save Settings & Reality Context"}
           </button>
         </div>
       </section>
