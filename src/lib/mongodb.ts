@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import "@/lib/register-models"; // Ensures all schemas are registered before any populate() call
+
 
 interface MongooseCache {
   conn: typeof mongoose | null;
