@@ -1,4 +1,4 @@
-const CACHE_NAME = "focos-v2";
+const CACHE_NAME = "focos-v3";
 const APP_SHELL = [
   "/",
   "/dashboard",
@@ -10,7 +10,6 @@ const APP_SHELL = [
   "/settings",
   "/login",
   "/signup",
-  "/manifest.webmanifest",
   "/icon-192.png",
   "/icon-512.png",
 ];
@@ -49,6 +48,15 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(request.url);
 
   if (url.origin !== self.location.origin) return;
+
+  // Let browser fetch manifest and SW scripts directly from network
+  if (
+    url.pathname.endsWith(".webmanifest") ||
+    url.pathname.endsWith("manifest.json") ||
+    url.pathname === "/sw.js"
+  ) {
+    return;
+  }
 
   if (request.mode === "navigate") {
     event.respondWith(

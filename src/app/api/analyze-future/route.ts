@@ -162,13 +162,22 @@ Return strictly valid JSON matching this schema:
 `;
 
     const ai = new GoogleGenAI({ apiKey });
-    const model = process.env.GEMINI_PARSE_MODEL || "gemini-2.0-flash";
 
-    const response = await ai.models.generateContent({
-      model,
+    // Priority fallback chain - gemini-2.0-flash is deprecated
+    const configuredModel = process.env.GEMINI_PARSE_MODEL;
+    const modelFallbackChain = [
+      ...(configuredModel && configuredModel !== "gemini-2.0-flash"
+        ? [configuredModel]
+        : []),
+      "gemini-3.6-flash",
+      "gemini-3.5-flash",
+      "gemini-3.5-flash-lite",
+    ];
+
+    const promptPayload = {
       contents: [
         {
-          role: "user",
+          role: "user" as const,
           parts: [
             {
               text: `${systemInstruction}\n\nHere is the user's data to analyze:\n${JSON.stringify(
@@ -184,9 +193,33 @@ Return strictly valid JSON matching this schema:
         responseMimeType: "application/json",
         temperature: 0.7,
       },
-    });
+    };
 
-    const responseText = response.text || "{}";
+    let responseText = "";
+    let lastError: unknown = null;
+
+    for (const model of modelFallbackChain) {
+      try {
+        const response = await ai.models.generateContent({ model, ...promptPayload });
+        if (response.text) {
+          responseText = response.text;
+          break;
+        }
+      } catch (err: unknown) {
+        lastError = err;
+        const msg = err instanceof Error ? err.message : String(err);
+        // Only retry on 404 (deprecated/not found) or 503 (overloaded)
+        if (!msg.includes('"code":404') && !msg.includes('"code":503')) {
+          throw err;
+        }
+        console.warn(`Model ${model} unavailable, trying next...`, msg.slice(0, 120));
+      }
+    }
+
+    if (!responseText) {
+      console.error("All Gemini models failed. Last error:", lastError);
+      return errorResponse("AI_UNAVAILABLE", "AI analysis service is temporarily unavailable. Please try again in a few minutes.", 503);
+    }
     let parsedResult;
     try {
       parsedResult = JSON.parse(responseText);

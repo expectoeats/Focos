@@ -30,11 +30,23 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" className="h-full antialiased">
       <body className="min-h-full flex flex-col bg-zinc-950 text-white font-sans">
         {children}
+        <Script id="pwa-install-capture" strategy="beforeInteractive">
+          {`
+            window.__focosPrompt = null;
+            window.addEventListener("beforeinstallprompt", function (e) {
+              e.preventDefault();
+              window.__focosPrompt = e;
+              window.dispatchEvent(new CustomEvent("focos-install-available"));
+            });
+          `}
+        </Script>
         <Script id="service-worker-registration" strategy="afterInteractive">
           {`
             if (typeof window !== "undefined" && "serviceWorker" in navigator) {
               window.addEventListener("load", function () {
-                navigator.serviceWorker.register("/sw.js").catch(function (err) {
+                navigator.serviceWorker.register("/sw.js").then(function (reg) {
+                  reg.update();
+                }).catch(function (err) {
                   console.warn("Service worker registration failed:", err);
                 });
               });
