@@ -164,13 +164,15 @@ Return strictly valid JSON matching this schema:
 
     const ai = new GoogleGenAI({ apiKey });
 
-    // Priority fallback chain (as per Google API recommendation)
+    // Valid models as confirmed by Google API error messages
+    // gemini-3.6-flash = exists (may be 503 overloaded)
+    // gemini-3.1-pro-preview = recommended by Google when 2.5-flash/pro return 404
     const configuredModel = process.env.GEMINI_PARSE_MODEL;
-    const modelFallbackChain = [
+    const modelFallbackChain: string[] = [
       ...(configuredModel ? [configuredModel] : []),
       "gemini-3.6-flash",
-      "gemini-2.5-flash",
-      "gemini-2.5-pro",
+      "gemini-3.6-flash",       // retry once more if overloaded (503)
+      "gemini-3.1-pro-preview", // Google-recommended fallback
     ];
 
     const promptPayload = {
@@ -207,7 +209,7 @@ Return strictly valid JSON matching this schema:
       } catch (err: unknown) {
         lastError = err;
         const msg = err instanceof Error ? err.message : String(err);
-        // Only retry on 404 (deprecated/not found) or 503 (overloaded)
+        // Retry on 404 (model deprecated/not found) or 503 (overloaded)
         if (!msg.includes('"code":404') && !msg.includes('"code":503')) {
           throw err;
         }
