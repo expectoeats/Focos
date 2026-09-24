@@ -164,13 +164,13 @@ Return strictly valid JSON matching this schema:
 
     const ai = new GoogleGenAI({ apiKey });
 
-    // Priority fallback chain
+    // Priority fallback chain (as per Google API recommendation)
     const configuredModel = process.env.GEMINI_PARSE_MODEL;
     const modelFallbackChain = [
       ...(configuredModel ? [configuredModel] : []),
+      "gemini-3.6-flash",
       "gemini-2.5-flash",
-      "gemini-2.5-flash-lite-preview-06-17",
-      "gemini-2.0-flash-001",
+      "gemini-2.5-pro",
     ];
 
     const promptPayload = {
