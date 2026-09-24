@@ -3,6 +3,7 @@ import { GoogleGenAI } from "@google/genai";
 import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
 import Session from "@/models/Session";
+import Category from "@/models/Category"; // Required for populate("categoryId") to work
 import VisionGoal from "@/models/VisionGoal";
 import AnalysisReport from "@/models/AnalysisReport";
 import { getAuthUser } from "@/lib/auth";
@@ -163,15 +164,13 @@ Return strictly valid JSON matching this schema:
 
     const ai = new GoogleGenAI({ apiKey });
 
-    // Priority fallback chain - gemini-2.0-flash is deprecated
+    // Priority fallback chain
     const configuredModel = process.env.GEMINI_PARSE_MODEL;
     const modelFallbackChain = [
-      ...(configuredModel && configuredModel !== "gemini-2.0-flash"
-        ? [configuredModel]
-        : []),
-      "gemini-3.6-flash",
-      "gemini-3.5-flash",
-      "gemini-3.5-flash-lite",
+      ...(configuredModel ? [configuredModel] : []),
+      "gemini-2.5-flash",
+      "gemini-2.5-flash-lite-preview-06-17",
+      "gemini-2.0-flash-001",
     ];
 
     const promptPayload = {
