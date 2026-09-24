@@ -9,6 +9,8 @@ import AnalysisReport from "@/models/AnalysisReport";
 import { getAuthUser } from "@/lib/auth";
 import { successResponse, errorResponse, handleApiError } from "@/lib/api-handler";
 
+export const maxDuration = 60; // Allow sufficient time for AI generation on Vercel
+
 export async function GET() {
   try {
     const authUser = await getAuthUser();
@@ -164,16 +166,19 @@ Return strictly valid JSON matching this schema:
 
     const ai = new GoogleGenAI({ apiKey });
 
-    // Valid models as confirmed by Google API error messages
-    // gemini-3.6-flash = exists (may be 503 overloaded)
-    // gemini-3.1-pro-preview = recommended by Google when 2.5-flash/pro return 404
+    // Priority fallback chain:
+    // 1. gemini-3.5-flash (verified active free quota & working)
+    // 2. gemini-3.6-flash (fallback if available/off peak)
+    // 3. gemini-3.5-flash-lite
     const configuredModel = process.env.GEMINI_PARSE_MODEL;
-    const modelFallbackChain: string[] = [
+    const modelCandidates = [
       ...(configuredModel ? [configuredModel] : []),
+      "gemini-3.5-flash",
       "gemini-3.6-flash",
-      "gemini-3.6-flash",       // retry once more if overloaded (503)
-      "gemini-3.1-pro-preview", // Google-recommended fallback
+      "gemini-3.5-flash-lite",
     ];
+    // Remove duplicates while keeping order
+    const modelFallbackChain = Array.from(new Set(modelCandidates));
 
     const promptPayload = {
       contents: [
@@ -209,37 +214,50 @@ Return strictly valid JSON matching this schema:
       } catch (err: unknown) {
         lastError = err;
         const msg = err instanceof Error ? err.message : String(err);
-        // Retry on 404 (model deprecated/not found) or 503 (overloaded)
-        if (!msg.includes('"code":404') && !msg.includes('"code":503')) {
-          throw err;
-        }
-        console.warn(`Model ${model} unavailable, trying next...`, msg.slice(0, 120));
+        console.warn(`Model ${model} failed, trying next...`, msg.slice(0, 150));
+        // Continue to next model on ANY error (404, 429, 503, etc.)
       }
     }
 
     if (!responseText) {
       console.error("All Gemini models failed. Last error:", lastError);
-      return errorResponse("AI_UNAVAILABLE", "AI analysis service is temporarily unavailable. Please try again in a few minutes.", 503);
+      const errMsg = lastError instanceof Error ? lastError.message : String(lastError);
+      return errorResponse("AI_UNAVAILABLE", `AI analysis service error: ${errMsg.slice(0, 180)}`, 503);
     }
-    let parsedResult;
+
+    let parsedResult: any;
     try {
       parsedResult = JSON.parse(responseText);
     } catch {
       // Fallback clean regex in case of markdown wrapping
-      const cleaned = responseText.replace(/```json/g, "").replace(/```/g, "").trim();
+      const cleaned = responseText.replace(/```json/gi, "").replace(/```/g, "").trim();
       parsedResult = JSON.parse(cleaned);
     }
 
-    // Save report to database
+    // Save report to database with safe fallback values
     const savedReport = await AnalysisReport.create({
       userId: authUser.userId,
-      timelineA: parsedResult.timelineA,
-      timelineB: parsedResult.timelineB,
-      rootCauseDiagnosis: parsedResult.rootCauseDiagnosis,
-      psychologicalTruthBomb: parsedResult.psychologicalTruthBomb,
-      emergencyProtocol: parsedResult.emergencyProtocol || [],
-      futureSelfMessage: parsedResult.futureSelfMessage,
-      driftScore: parsedResult.driftScore ?? 65,
+      timelineA: {
+        timeframe6m: parsedResult?.timelineA?.timeframe6m || "",
+        timeframe2y: parsedResult?.timelineA?.timeframe2y || "",
+        darkFate: parsedResult?.timelineA?.darkFate || "",
+      },
+      timelineB: {
+        targetVision: parsedResult?.timelineB?.targetVision || "",
+        expectedReality: parsedResult?.timelineB?.expectedReality || "",
+      },
+      rootCauseDiagnosis: {
+        coreMistake: parsedResult?.rootCauseDiagnosis?.coreMistake || "",
+        notesEvidence: parsedResult?.rootCauseDiagnosis?.notesEvidence || "",
+        psychologicalTrigger: parsedResult?.rootCauseDiagnosis?.psychologicalTrigger || "",
+      },
+      psychologicalTruthBomb: {
+        conceptTitle: parsedResult?.psychologicalTruthBomb?.conceptTitle || "",
+        explanation: parsedResult?.psychologicalTruthBomb?.explanation || "",
+      },
+      emergencyProtocol: Array.isArray(parsedResult?.emergencyProtocol) ? parsedResult.emergencyProtocol : [],
+      futureSelfMessage: parsedResult?.futureSelfMessage || "",
+      driftScore: typeof parsedResult?.driftScore === "number" ? parsedResult.driftScore : 65,
       totalSessionsAnalyzed: totalSessions,
     });
 
