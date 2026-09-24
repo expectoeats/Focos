@@ -68,7 +68,7 @@ interface Category {
   icon: string;
   color: string;
 }
-
+//r
 interface Session {
   _id: string;
   categoryId: { _id: string; name: string; icon: string; color: string };
