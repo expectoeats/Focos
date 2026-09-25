@@ -23,6 +23,8 @@ export interface IAnalysisReport extends Document {
   };
   emergencyProtocol: string[];
   futureSelfMessage: string;
+  coachVerdict?: string;
+  survivalProbability?: number;
   driftScore?: number;
   totalSessionsAnalyzed: number;
   createdAt: Date;
@@ -52,6 +54,8 @@ const AnalysisReportSchema = new Schema<IAnalysisReport>(
     },
     emergencyProtocol: [{ type: String }],
     futureSelfMessage: { type: String, default: "" },
+    coachVerdict: { type: String, default: "" },
+    survivalProbability: { type: Number, default: 20 },
     driftScore: { type: Number, default: 50 },
     totalSessionsAnalyzed: { type: Number, default: 0 },
   },

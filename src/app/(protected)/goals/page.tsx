@@ -25,6 +25,14 @@ import {
   Eye,
   Rocket,
   Check,
+  Swords,
+  Activity,
+  Terminal,
+  Volume2,
+  Lock,
+  Crosshair,
+  TrendingDown,
+  TrendingUp,
 } from "lucide-react";
 
 interface PermanentGoal {
@@ -63,6 +71,8 @@ interface AnalysisReport {
   };
   emergencyProtocol: string[];
   futureSelfMessage: string;
+  coachVerdict?: string;
+  survivalProbability?: number;
   driftScore?: number;
   totalSessionsAnalyzed?: number;
   createdAt?: string;
@@ -99,6 +109,7 @@ export default function GoalsPage() {
   const [saveMessage, setSaveMessage] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [checkedRules, setCheckedRules] = useState<Record<number, boolean>>({});
+  const [warModePledged, setWarModePledged] = useState(false);
 
   useEffect(() => {
     async function loadData() {
@@ -202,19 +213,20 @@ export default function GoalsPage() {
   async function handleTriggerAnalysis() {
     setAnalyzing(true);
     setErrorMsg("");
-    setAnalyzingStage("Pichle sessions aur task notes scan ho rahe hain...");
+    setWarModePledged(false);
+    setAnalyzingStage("⚡ Pichle unedited sessions aur task notes scan ho rahe hain...");
 
     const stageTimer1 = setTimeout(() => {
-      setAnalyzingStage("Personal profile context & runway evaluate ho raha hai...");
+      setAnalyzingStage("🔍 Subconscious rationalizations aur fake productivity unmask ho rahi hai...");
     }, 1500);
 
     const stageTimer2 = setTimeout(() => {
-      setAnalyzingStage("5-saal ka timeline divergence simulate ho raha hai...");
+      setAnalyzingStage("⏳ 5-Saal ka Multiverse Divergence simulate ho raha hai (Timeline Alpha vs Omega)...");
     }, 3200);
 
     const stageTimer3 = setTimeout(() => {
-      setAnalyzingStage("Strict truth report synthesize ho rahi hai...");
-    }, 5500);
+      setAnalyzingStage("📡 Year 2031 se blackbox distress frequency intercept ho rahi hai...");
+    }, 5200);
 
     try {
       const res = await fetch("/api/analyze-future", {
@@ -246,95 +258,98 @@ export default function GoalsPage() {
 
   if (loadingInitial) {
     return (
-      <div className="p-8 max-w-5xl mx-auto flex flex-col items-center justify-center min-h-[60vh] space-y-4">
-        <div className="relative">
-          <div className="w-16 h-16 rounded-3xl bg-gradient-to-tr from-amber-500 via-rose-500 to-indigo-500 animate-spin blur-md opacity-75" />
-          <div className="w-16 h-16 rounded-3xl bg-zinc-950 flex items-center justify-center absolute inset-0 m-auto border border-zinc-800">
-            <Compass className="w-7 h-7 text-amber-400 animate-pulse" />
-          </div>
-        </div>
-        <p className="text-zinc-400 text-sm font-medium tracking-wide animate-pulse">
-          Loading Goals & Quantum Reality Engine...
-        </p>
+      <div className="p-8 max-w-5xl mx-auto flex flex-col items-center justify-center min-h-[60vh] gap-4">
+        <div className="w-10 h-10 border-2 border-zinc-700 border-t-amber-500 rounded-full animate-spin" />
+        <p className="text-zinc-500 text-sm">Loading goals...</p>
       </div>
     );
   }
 
   const drift = report?.driftScore ?? 65;
+  const survival = report?.survivalProbability ?? Math.max(5, Math.min(95, 100 - drift));
+
   const driftColor =
     drift > 65
-      ? { stroke: "#f43f5e", text: "text-rose-400", bg: "bg-rose-500/10", border: "border-rose-500/30", label: "Critical Drift Warning" }
+      ? { stroke: "#f43f5e", text: "text-rose-400", border: "border-rose-500/40", label: "Critical Drift" }
       : drift > 35
-      ? { stroke: "#f59e0b", text: "text-amber-400", bg: "bg-amber-500/10", border: "border-amber-500/30", label: "Moderate Deviation" }
-      : { stroke: "#10b981", text: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/30", label: "Target Aligned" };
+      ? { stroke: "#f59e0b", text: "text-amber-400", border: "border-amber-500/40", label: "Moderate Deviation" }
+      : { stroke: "#10b981", text: "text-emerald-400", border: "border-emerald-500/40", label: "Target Aligned" };
+
+  const survivalColor =
+    survival < 30
+      ? { text: "text-rose-400", bg: "bg-rose-500/10", border: "border-rose-500/30", label: "Critical Mortality" }
+      : survival < 65
+      ? { text: "text-amber-400", bg: "bg-amber-500/10", border: "border-amber-500/30", label: "Borderline Survival" }
+      : { text: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/30", label: "Dominant Victor" };
+
+  const defconStatus =
+    drift >= 70
+      ? { label: "DEFCON 1: CRITICAL DELUSION", badge: "bg-rose-500/15 border-rose-500/40 text-rose-400" }
+      : drift >= 40
+      ? { label: "DEFCON 2: MODERATE DRIFT", badge: "bg-amber-500/15 border-amber-500/40 text-amber-400" }
+      : { label: "DEFCON 3: SOVEREIGN ALIGNMENT", badge: "bg-emerald-500/15 border-emerald-500/40 text-emerald-400" };
 
   return (
-    <div className="p-4 md:p-8 max-w-5xl mx-auto space-y-8 animate-in fade-in duration-500">
-      {/* TOP HERO & QUANTUM ENGINE BANNER */}
-      <div className="relative overflow-hidden rounded-3xl border border-zinc-800/80 bg-gradient-to-b from-zinc-900/90 via-zinc-900/50 to-zinc-950 p-6 md:p-8 shadow-2xl backdrop-blur-xl">
-        <div className="absolute -top-24 -left-24 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -right-24 w-80 h-80 bg-rose-600/10 rounded-full blur-3xl pointer-events-none" />
+    <div className="p-4 md:p-8 max-w-5xl mx-auto space-y-6">
 
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider border border-amber-500/30 bg-amber-500/10 text-amber-300">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Future Reality Engine & North Star</span>
-            </div>
-            <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight text-white flex items-center gap-3">
-              Goals & Future Reality
-            </h1>
-            <p className="text-sm md:text-base text-zinc-400 max-w-xl leading-relaxed">
-              Apne ultimate targets set karein aur dekhein ki aapke actual daily task notes aapko kis 5-saal ke anjaam ki taraf le ja rahe hain.
-            </p>
-          </div>
-
-          <div className="flex-shrink-0">
+      {/* HERO BANNER */}
+      <div className="relative overflow-hidden rounded-lg border border-zinc-800 h-48 md:h-56">
+        <img
+          src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=80"
+          alt="Mountain — Goal & Aspiration"
+          className="absolute inset-0 w-full h-full object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-zinc-950/70" />
+        <div className="relative z-10 h-full flex flex-col justify-between p-6 md:p-8">
+          <div className="flex items-start justify-between">
+            <span className="text-xs font-medium text-amber-400 border border-amber-500/40 px-2.5 py-1 rounded-md">
+              Future Reality Engine
+            </span>
             <Link
               href="/settings"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-zinc-900/90 hover:bg-zinc-800 text-zinc-300 hover:text-white text-xs font-bold border border-zinc-700/80 shadow-lg transition-all hover:scale-105"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-zinc-900/80 hover:bg-zinc-800 text-zinc-300 hover:text-white text-xs font-medium border border-zinc-700 transition-colors"
             >
-              <Settings className="w-4 h-4 text-amber-400" />
-              <span>Edit Reality Profile</span>
+              <Settings className="w-3.5 h-3.5" />
+              <span>Edit Profile</span>
             </Link>
+          </div>
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">
+              Goals &amp; North Star
+            </h1>
+            <p className="text-sm text-zinc-400 mt-1 max-w-lg">
+              Set your ultimate targets and see where your daily habits are actually taking you.
+            </p>
           </div>
         </div>
       </div>
 
+      {/* NOTIFICATIONS */}
       {saveMessage && (
-        <div className="p-3.5 bg-emerald-950/70 border border-emerald-700 text-emerald-300 text-xs font-semibold rounded-2xl flex items-center gap-2 shadow-lg animate-in fade-in">
-          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+        <div className="p-3 bg-zinc-900 border border-emerald-700/60 text-emerald-300 text-xs rounded-md flex items-center gap-2">
+          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
           <span>{saveMessage}</span>
         </div>
       )}
 
       {errorMsg && (
-        <div className="p-3.5 bg-rose-950/70 border border-rose-700 text-rose-300 text-xs font-semibold rounded-2xl flex items-center gap-2 shadow-lg animate-in fade-in">
-          <AlertTriangle className="w-4 h-4 text-rose-400" />
+        <div className="p-3 bg-zinc-900 border border-rose-700/60 text-rose-300 text-xs rounded-md flex items-center gap-2">
+          <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />
           <span>{errorMsg}</span>
         </div>
       )}
 
       {/* SECTION 1: PERMANENT SUCCESS GOAL (NORTH STAR) */}
-      <div className="relative overflow-hidden rounded-3xl border-2 border-amber-500/40 bg-gradient-to-br from-zinc-900 via-zinc-900/90 to-amber-950/20 p-6 md:p-8 shadow-2xl">
-        <div className="absolute top-0 right-0 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="flex items-start justify-between gap-4 mb-5 relative z-10">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 shadow-md">
-              <Crown className="w-5 h-5" />
+      <div className="rounded-lg border border-amber-500/30 bg-zinc-900 p-6 md:p-7">
+        <div className="flex items-start justify-between gap-4 mb-5">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <Crown className="w-4 h-4 text-amber-500" />
+              <span className="text-xs font-semibold text-amber-500 uppercase tracking-wider">North Star</span>
+              <span className="text-xs text-zinc-600">·</span>
+              <span className="text-xs text-zinc-500">Non-Negotiable</span>
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                  North Star
-                </span>
-                <span className="text-xs text-zinc-500 font-mono">Non-Negotiable</span>
-              </div>
-              <h2 className="text-lg md:text-xl font-black text-white tracking-tight mt-0.5">
-                Permanent Success Goal
-              </h2>
-            </div>
+            <h2 className="text-base font-semibold text-white">Permanent Success Goal</h2>
           </div>
 
           <button
@@ -344,60 +359,60 @@ export default function GoalsPage() {
               }
               setEditingPermanent(!editingPermanent);
             }}
-            className="text-xs font-bold text-zinc-300 hover:text-white px-3.5 py-1.5 rounded-xl bg-zinc-800/90 hover:bg-zinc-700 border border-zinc-700 transition-all shadow-sm"
+            className="text-xs font-medium text-zinc-300 hover:text-white px-3 py-1.5 rounded-md bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 transition-colors shrink-0"
           >
             {editingPermanent ? "Cancel" : "Edit Goal"}
           </button>
         </div>
 
         {editingPermanent ? (
-          <div className="space-y-4 pt-2 relative z-10">
+          <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="md:col-span-2">
-                <label className="block text-xs font-bold text-zinc-300 mb-1.5 flex items-center gap-1.5">
-                  <Trophy className="w-3.5 h-3.5 text-amber-400" />
+                <label className="block text-xs font-medium text-zinc-400 mb-1.5 flex items-center gap-1.5">
+                  <Trophy className="w-3.5 h-3.5 text-amber-500" />
                   <span>Ultimate Target Title</span>
                 </label>
                 <input
                   value={permanentForm.title}
                   onChange={(e) => setPermanentForm({ ...permanentForm, title: e.target.value })}
                   placeholder="e.g. Build ₹40 Lakhs/month Software Company, BMW Supercar, Financial Freedom"
-                  className="w-full bg-zinc-950 border border-zinc-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-amber-400 shadow-inner"
+                  className="w-full bg-zinc-950 border border-zinc-700 rounded-md px-3 py-2 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-amber-500 transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-zinc-300 mb-1.5 flex items-center gap-1.5">
-                  <Calendar className="w-3.5 h-3.5 text-amber-400" />
+                <label className="block text-xs font-medium text-zinc-400 mb-1.5 flex items-center gap-1.5">
+                  <Calendar className="w-3.5 h-3.5 text-amber-500" />
                   <span>Target Deadline / Age</span>
                 </label>
                 <input
                   value={permanentForm.targetDeadline}
                   onChange={(e) => setPermanentForm({ ...permanentForm, targetDeadline: e.target.value })}
                   placeholder="e.g. September 2027 / Age 26"
-                  className="w-full bg-zinc-950 border border-zinc-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-amber-400 shadow-inner"
+                  className="w-full bg-zinc-950 border border-zinc-700 rounded-md px-3 py-2 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-amber-500 transition-colors"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold text-zinc-300 mb-1.5 flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Kyu Chahiye? (Purpose & Family Dreams)</span>
+                <label className="block text-xs font-medium text-zinc-400 mb-1.5 flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                  <span>Kyu Chahiye? (Purpose &amp; Family Dreams)</span>
                 </label>
                 <textarea
                   value={permanentForm.whyItMatters}
                   onChange={(e) => setPermanentForm({ ...permanentForm, whyItMatters: e.target.value })}
                   rows={3}
                   placeholder="e.g. Mummy papa ke saare sapne pure karne hain, beheno ki shadi apne paiso se karni hai, gareebi se bahar aana hai..."
-                  className="w-full bg-zinc-950 border border-zinc-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-400 resize-none shadow-inner"
+                  className="w-full bg-zinc-950 border border-zinc-700 rounded-md p-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-amber-500 resize-none transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-rose-300 mb-1.5 flex items-center gap-1.5">
-                  <Skull className="w-3.5 h-3.5 text-rose-400" />
+                <label className="block text-xs font-medium text-rose-400 mb-1.5 flex items-center gap-1.5">
+                  <Skull className="w-3.5 h-3.5 text-rose-500" />
                   <span>The High Stakes (Fail hone par kya anjaam hoga?)</span>
                 </label>
                 <textarea
@@ -405,57 +420,57 @@ export default function GoalsPage() {
                   onChange={(e) => setPermanentForm({ ...permanentForm, stakes: e.target.value })}
                   rows={3}
                   placeholder="e.g. Compelled to do a low paying dead-end job, relatives ki baatein, family dreams crash..."
-                  className="w-full bg-zinc-950 border border-rose-950/80 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-rose-500 resize-none shadow-inner"
+                  className="w-full bg-zinc-950 border border-rose-900/50 rounded-md p-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-rose-500 resize-none transition-colors"
                 />
               </div>
             </div>
 
-            <div className="flex justify-end pt-2">
+            <div className="flex justify-end pt-1">
               <button
                 onClick={handleSavePermanentGoal}
                 disabled={savingGoals || !permanentForm.title.trim()}
-                className="px-6 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black font-extrabold text-xs rounded-xl shadow-lg shadow-amber-950/50 transition-all disabled:opacity-50"
+                className="px-5 py-2 bg-amber-500 hover:bg-amber-400 text-black font-semibold text-xs rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {savingGoals ? "Saving..." : "Save Permanent Goal ✨"}
+                {savingGoals ? "Saving..." : "Save Permanent Goal"}
               </button>
             </div>
           </div>
         ) : (
-          <div className="space-y-4 relative z-10">
+          <div className="space-y-4">
             {vision.permanentGoal.title ? (
               <>
                 <div className="flex flex-wrap items-baseline gap-3">
-                  <h3 className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-100 to-white">
+                  <h3 className="text-xl md:text-2xl font-bold text-white">
                     {vision.permanentGoal.title}
                   </h3>
                   {vision.permanentGoal.targetDeadline && (
-                    <span className="text-xs px-3 py-1 rounded-xl bg-amber-500/10 text-amber-300 font-mono font-bold border border-amber-500/30 flex items-center gap-1.5">
-                      <Hourglass className="w-3.5 h-3.5" />
+                    <span className="text-xs px-2.5 py-1 rounded-md bg-zinc-800 text-amber-400 font-mono border border-zinc-700 flex items-center gap-1.5 shrink-0">
+                      <Hourglass className="w-3 h-3" />
                       <span>{vision.permanentGoal.targetDeadline}</span>
                     </span>
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
                   {vision.permanentGoal.whyItMatters && (
-                    <div className="p-4 rounded-2xl bg-zinc-950/80 border border-amber-500/20 shadow-md">
-                      <div className="flex items-center gap-2 mb-2 text-amber-300 text-xs font-bold uppercase tracking-wider">
-                        <Sparkles className="w-4 h-4 text-amber-400" />
-                        <span>Kyu Chahiye (Purpose & Vision):</span>
+                    <div className="p-4 rounded-lg bg-zinc-950 border border-zinc-800">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                        <span className="text-xs font-semibold text-amber-500">Kyu Chahiye — Purpose</span>
                       </div>
-                      <p className="text-zinc-200 text-xs sm:text-sm leading-relaxed whitespace-pre-line">
+                      <p className="text-zinc-300 text-sm leading-relaxed whitespace-pre-line">
                         {vision.permanentGoal.whyItMatters}
                       </p>
                     </div>
                   )}
 
                   {vision.permanentGoal.stakes && (
-                    <div className="p-4 rounded-2xl bg-zinc-950/80 border border-rose-900/40 shadow-md">
-                      <div className="flex items-center gap-2 mb-2 text-rose-300 text-xs font-bold uppercase tracking-wider">
-                        <ShieldAlert className="w-4 h-4 text-rose-400" />
-                        <span>High Stakes (Fail hone par nuksaan):</span>
+                    <div className="p-4 rounded-lg bg-zinc-950 border border-rose-900/40">
+                      <div className="flex items-center gap-2 mb-2">
+                        <ShieldAlert className="w-3.5 h-3.5 text-rose-500" />
+                        <span className="text-xs font-semibold text-rose-500">High Stakes — Fail hone par</span>
                       </div>
-                      <p className="text-zinc-200 text-xs sm:text-sm leading-relaxed whitespace-pre-line">
+                      <p className="text-zinc-300 text-sm leading-relaxed whitespace-pre-line">
                         {vision.permanentGoal.stakes}
                       </p>
                     </div>
@@ -463,13 +478,13 @@ export default function GoalsPage() {
                 </div>
               </>
             ) : (
-              <div className="py-6 text-center space-y-3">
-                <p className="text-sm text-zinc-400">
-                  Aapne abhi tak apna Permanent Success Goal set nahi kiya hai. Ek clear North Star hona mandatory hai.
+              <div className="py-8 text-center space-y-3 border border-dashed border-zinc-800 rounded-lg">
+                <p className="text-sm text-zinc-500">
+                  No permanent goal set yet. A clear North Star is mandatory.
                 </p>
                 <button
                   onClick={() => setEditingPermanent(true)}
-                  className="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black font-extrabold text-xs rounded-xl transition-all shadow-lg shadow-amber-950/50"
+                  className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-black font-semibold text-xs rounded-md transition-colors"
                 >
                   + Add Permanent Goal
                 </button>
@@ -479,47 +494,44 @@ export default function GoalsPage() {
         )}
       </div>
 
-      {/* SECTION 2: PERIOD TARGETS (DAILY / WEEKLY / MONTHLY / YEARLY) */}
-      <div className="rounded-3xl border border-zinc-800 bg-zinc-900/80 p-6 md:p-7 space-y-5 backdrop-blur-xl shadow-xl">
+      {/* SECTION 2: PERIOD TARGETS */}
+      <div className="rounded-lg border border-zinc-800 bg-zinc-900 p-6 md:p-7 space-y-5">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Target className="w-5 h-5 text-rose-400" />
-            <h2 className="text-sm font-bold text-white uppercase tracking-wider">
-              Execution Targets
-            </h2>
+          <div className="flex items-center gap-2 border-l-2 border-amber-500 pl-3">
+            <Target className="w-4 h-4 text-zinc-400" />
+            <h2 className="text-sm font-semibold text-white">Execution Targets</h2>
           </div>
-          <span className="text-xs font-mono text-zinc-400 flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>{savingGoals ? "Auto-saving..." : "Targets are in sync"}</span>
+          <span className="text-xs text-zinc-500 flex items-center gap-1.5">
+            <span className={`w-1.5 h-1.5 rounded-full ${savingGoals ? "bg-amber-500" : "bg-emerald-500"}`} />
+            <span>{savingGoals ? "Saving..." : "In sync"}</span>
           </span>
         </div>
 
-        {/* Playful Tab Switcher */}
-        <div className="flex border-b border-zinc-800/80 gap-2 pb-1 overflow-x-auto">
+        {/* Tab Switcher */}
+        <div className="flex border-b border-zinc-800 gap-1 overflow-x-auto">
           {[
-            { id: "daily", label: "Daily Blitz", icon: "⚡", activeBorder: "border-amber-400 text-amber-300" },
-            { id: "weekly", label: "Weekly Sprint", icon: "🚀", activeBorder: "border-blue-400 text-blue-300" },
-            { id: "monthly", label: "Monthly Siege", icon: "🎯", activeBorder: "border-purple-400 text-purple-300" },
-            { id: "yearly", label: "Yearly Crown", icon: "👑", activeBorder: "border-emerald-400 text-emerald-300" },
+            { id: "daily", label: "Daily" },
+            { id: "weekly", label: "Weekly" },
+            { id: "monthly", label: "Monthly" },
+            { id: "yearly", label: "Yearly" },
           ].map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center gap-2 px-4 py-2.5 text-xs font-bold rounded-xl transition-all ${
+              className={`px-4 py-2 text-xs font-medium transition-colors border-b-2 -mb-px ${
                 activeTab === tab.id
-                  ? `bg-zinc-800/90 text-white shadow-md border-b-2 ${tab.activeBorder}`
-                  : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/40"
+                  ? "border-amber-500 text-amber-400"
+                  : "border-transparent text-zinc-500 hover:text-zinc-300"
               }`}
             >
-              <span>{tab.icon}</span>
-              <span>{tab.label}</span>
+              {tab.label}
             </button>
           ))}
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-zinc-300 mb-2 capitalize">
-            {activeTab} Target Description & Non-Negotiable Key Focus:
+          <label className="block text-xs font-medium text-zinc-400 mb-2 capitalize">
+            {activeTab} target &amp; non-negotiable focus:
           </label>
           <textarea
             key={activeTab}
@@ -543,348 +555,475 @@ export default function GoalsPage() {
                 ? "Is mahine ka objective: (e.g. Launch beta version and get first 10 active users)"
                 : "Is saal ka milestone: (e.g. Reach ₹50k MRR and quit freelancing)"
             }
-            className="w-full bg-zinc-950 border border-zinc-700/80 rounded-2xl p-4 text-sm text-white focus:outline-none focus:border-zinc-500 leading-relaxed shadow-inner"
+            className="w-full bg-zinc-950 border border-zinc-700 rounded-md p-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-zinc-500 resize-none transition-colors leading-relaxed"
           />
-          <p className="text-[11px] text-zinc-500 mt-2 flex items-center gap-1.5">
-            <Check className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Text box ke bahar click karne par target automatically sync ho jata hai.</span>
+          <p className="text-xs text-zinc-600 mt-1.5 flex items-center gap-1.5">
+            <Check className="w-3 h-3 text-emerald-500" />
+            <span>Auto-saves when you click outside.</span>
           </p>
         </div>
       </div>
 
-      {/* SECTION 3: THE ACTION TRIGGER (Vibrant Radiant Button) */}
-      <div className="text-center py-6">
+      {/* SECTION 3: ANALYZE BUTTON */}
+      <div className="flex flex-col items-center gap-3 py-4">
         <button
           onClick={handleTriggerAnalysis}
           disabled={analyzing}
-          className="relative inline-flex items-center justify-center gap-3 px-8 md:px-10 py-4 md:py-5 rounded-2xl font-black text-sm md:text-base tracking-wider text-white transition-all transform hover:scale-[1.03] active:scale-[0.97] disabled:opacity-50 disabled:scale-100 shadow-[0_0_50px_rgba(225,29,72,0.3)] overflow-hidden group bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 border border-rose-300/40"
+          className="inline-flex items-center gap-2.5 px-7 py-3 rounded-md bg-rose-600 hover:bg-rose-500 text-white font-semibold text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {/* Animated beam */}
-          <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-
           {analyzing ? (
-            <span className="flex items-center gap-3">
-              <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              <span>Analyzing Task Notes & Future Divergence...</span>
-            </span>
+            <>
+              <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              <span>Analyzing Task Notes &amp; Future Divergence...</span>
+            </>
           ) : (
-            <span className="flex items-center gap-3">
-              <Flame className="w-5 h-5 text-amber-300 animate-pulse fill-amber-300" />
-              <span>Analyze Future & Reality (Strict Mode)</span>
-            </span>
+            <>
+              <Flame className="w-4 h-4" />
+              <span>Analyze Future &amp; Reality (Strict Mode)</span>
+            </>
           )}
         </button>
 
         {analyzing && (
-          <p className="text-xs text-rose-400 mt-3 font-mono animate-pulse">
-            ⚡ {analyzingStage}
+          <p className="text-xs text-zinc-500 font-mono">
+            {analyzingStage}
           </p>
         )}
       </div>
 
-      {/* SECTION 4: THE BRUTAL REALITY & FUTURE REPORT */}
+      {/* SECTION 4: ANALYSIS REPORT */}
       {report && (
-        <div id="analysis-report-section" className="space-y-7 pt-4 animate-in fade-in duration-700">
-          {/* Report Top Meta & Circular Drift Gauge */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 p-6 rounded-3xl bg-zinc-900 border border-zinc-800 shadow-2xl">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse" />
-                <h2 className="text-sm font-black uppercase tracking-wider text-rose-400">
-                  Reality & Future Projection Report
+        <div id="analysis-report-section" className="space-y-6 pt-2">
+
+          {/* 1. HERO REALITY DECREE & TELEMETRY COMMAND BAR */}
+          <div className="relative overflow-hidden rounded-xl border border-rose-500/40 bg-gradient-to-b from-rose-950/40 via-zinc-900 to-zinc-950 p-6 md:p-8 shadow-2xl shadow-rose-950/40">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-rose-600/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
+            
+            <div className="relative z-10 flex flex-col gap-6">
+              {/* Top Status Bar */}
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-800/80 pb-4">
+                <div className="flex items-center gap-2.5">
+                  <span className="relative flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-rose-500"></span>
+                  </span>
+                  <span className="text-[11px] font-mono tracking-widest uppercase font-bold text-rose-400 flex items-center gap-1.5">
+                    <Crosshair className="w-3.5 h-3.5" />
+                    <span>Omniscient Time-Architect // Strict Reality Verdict</span>
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <span className={`text-[10px] font-mono font-bold px-2.5 py-1 rounded border ${defconStatus.badge}`}>
+                    {defconStatus.label}
+                  </span>
+                  {report.totalSessionsAnalyzed !== undefined && (
+                    <span className="text-[10px] font-mono px-2 py-1 rounded bg-zinc-800/80 text-zinc-400 border border-zinc-700">
+                      {report.totalSessionsAnalyzed} SESSIONS SCANNED
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Coach Verdict Decree */}
+              <div className="space-y-2">
+                <span className="text-[11px] font-mono font-semibold tracking-wider text-zinc-500 uppercase flex items-center gap-1.5">
+                  <Activity className="w-3.5 h-3.5 text-rose-500" />
+                  <span>The Unfiltered Reality Decree</span>
+                </span>
+                <h2 className="text-xl md:text-2xl font-black text-white tracking-tight leading-snug">
+                  &ldquo;{report.coachVerdict || report.rootCauseDiagnosis.coreMistake}&rdquo;
                 </h2>
               </div>
-              <p className="text-xs text-zinc-400 max-w-md">
-                Synthesized by analyzing your logged task notes, durations, profile context, and daily targets.
-              </p>
-            </div>
 
-            {/* Circular Drift Score Gauge */}
-            <div className={`flex items-center gap-4 p-3.5 px-5 rounded-2xl border ${driftColor.bg} ${driftColor.border} shadow-lg`}>
-              <div className="text-right">
-                <span className="text-[10px] uppercase font-bold tracking-widest text-zinc-400 block">
-                  Goal Drift Index
-                </span>
-                <span className={`text-xs font-extrabold ${driftColor.text}`}>
-                  {driftColor.label}
-                </span>
-              </div>
+              {/* Telemetry Metric Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-2">
+                {/* Survival Probability */}
+                <div className={`p-4 rounded-lg border ${survivalColor.border} bg-zinc-950/80 flex items-center justify-between`}>
+                  <div>
+                    <span className="text-[10px] uppercase font-mono tracking-wider text-zinc-500 block">
+                      Survival Probability
+                    </span>
+                    <span className={`text-xs font-semibold ${survivalColor.text} block mt-0.5`}>
+                      {survivalColor.label}
+                    </span>
+                  </div>
+                  <div className="text-right">
+                    <span className={`text-2xl font-black font-mono ${survivalColor.text}`}>
+                      {survival}%
+                    </span>
+                  </div>
+                </div>
 
-              <div className="relative w-14 h-14 flex items-center justify-center flex-shrink-0">
-                <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
-                  <path
-                    className="text-zinc-800"
-                    strokeWidth="3.5"
-                    stroke="currentColor"
-                    fill="none"
-                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                  />
-                  <path
-                    stroke={driftColor.stroke}
-                    strokeDasharray={`${drift}, 100`}
-                    strokeLinecap="round"
-                    strokeWidth="3.5"
-                    fill="none"
-                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                  />
-                </svg>
-                <span className={`absolute text-xs font-black font-mono ${driftColor.text}`}>
-                  {drift}%
-                </span>
+                {/* Goal Drift Gauge */}
+                <div className={`p-4 rounded-lg border ${driftColor.border} bg-zinc-950/80 flex items-center justify-between`}>
+                  <div>
+                    <span className="text-[10px] uppercase font-mono tracking-wider text-zinc-500 block">
+                      Timeline Drift Index
+                    </span>
+                    <span className={`text-xs font-semibold ${driftColor.text} block mt-0.5`}>
+                      {driftColor.label}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className={`text-2xl font-black font-mono ${driftColor.text}`}>
+                      {drift}%
+                    </span>
+                    <div className="relative w-8 h-8 flex items-center justify-center">
+                      <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                        <path
+                          className="text-zinc-800"
+                          strokeWidth="4"
+                          stroke="currentColor"
+                          fill="none"
+                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                        <path
+                          stroke={driftColor.stroke}
+                          strokeDasharray={`${drift}, 100`}
+                          strokeLinecap="round"
+                          strokeWidth="4"
+                          fill="none"
+                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Trajectory Vector */}
+                <div className="p-4 rounded-lg border border-zinc-800 bg-zinc-950/80 flex items-center justify-between sm:col-span-2 lg:col-span-1">
+                  <div>
+                    <span className="text-[10px] uppercase font-mono tracking-wider text-zinc-500 block">
+                      Trajectory Vector
+                    </span>
+                    <span className="text-xs font-semibold text-zinc-300 block mt-0.5">
+                      {drift > 50 ? "Decaying to Timeline Alpha" : "Climbing to Timeline Omega"}
+                    </span>
+                  </div>
+                  <div>
+                    {drift > 50 ? (
+                      <TrendingDown className="w-6 h-6 text-rose-500" />
+                    ) : (
+                      <TrendingUp className="w-6 h-6 text-emerald-400" />
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* BLOCK A: DUAL TIMELINE PROJECTION (Cinematic Contrast) */}
+          {/* 2. DUAL TIMELINE: MULTIVERSE DIVERGENCE */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {/* Timeline A: Dark Fate */}
-            <div className="relative overflow-hidden rounded-3xl border-2 border-rose-900/80 bg-gradient-to-b from-rose-950/30 via-zinc-900 to-zinc-950 p-6 space-y-4 shadow-xl">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-rose-600/20 border border-rose-600/40 flex items-center justify-center text-rose-400">
-                    <Skull className="w-4 h-4" />
-                  </div>
+
+            {/* TIMELINE ALPHA: THE DEFAULT CRASH */}
+            <div className="rounded-xl border-l-4 border-rose-600 border-t border-r border-b border-rose-900/40 bg-gradient-to-b from-rose-950/20 via-zinc-950 to-zinc-950 p-5 md:p-6 space-y-5 shadow-lg shadow-rose-950/20">
+              <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+                <div className="flex items-center gap-2">
+                  <Skull className="w-5 h-5 text-rose-500" />
                   <div>
-                    <h3 className="text-sm font-black uppercase tracking-wider text-rose-300">
-                      Timeline A: The Default Crash
+                    <h3 className="text-sm font-bold text-rose-400 uppercase tracking-wide">
+                      Timeline Alpha // Default Entropy
                     </h3>
-                    <span className="text-[10px] text-rose-400/80 font-mono">Agar aadat nahi badli</span>
+                    <span className="text-[11px] text-zinc-500">Agar daily excuses aur comfort nahi chhute</span>
                   </div>
                 </div>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-950 text-rose-300 border border-rose-800">
-                  Dystopian
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-rose-500/10 text-rose-400 border border-rose-500/30 uppercase font-semibold">
+                  Maut Ka Rasta
                 </span>
               </div>
 
-              <div className="space-y-3 text-xs text-zinc-300">
-                <div className="p-3.5 rounded-2xl bg-zinc-950/80 border border-rose-950 space-y-1">
-                  <span className="font-bold text-rose-400 block text-[11px] uppercase tracking-wider">
-                    📅 Next 6 Months:
-                  </span>
-                  <p className="leading-relaxed">{report.timelineA.timeframe6m}</p>
+              <div className="space-y-4 text-sm text-zinc-300">
+                <div className="p-3.5 rounded-lg bg-zinc-900/60 border border-zinc-800/80 space-y-1">
+                  <div className="flex items-center gap-1.5 text-xs font-mono font-semibold text-rose-400">
+                    <Hourglass className="w-3.5 h-3.5" />
+                    <span>T + 6 MONTHS (Compounding Stagnation)</span>
+                  </div>
+                  <p className="leading-relaxed text-zinc-300 text-xs md:text-sm pl-5">
+                    {report.timelineA.timeframe6m}
+                  </p>
                 </div>
 
-                <div className="p-3.5 rounded-2xl bg-zinc-950/80 border border-rose-950 space-y-1">
-                  <span className="font-bold text-rose-400 block text-[11px] uppercase tracking-wider">
-                    ⏳ Next 2 to 3 Years:
-                  </span>
-                  <p className="leading-relaxed">{report.timelineA.timeframe2y}</p>
+                <div className="p-3.5 rounded-lg bg-zinc-900/60 border border-zinc-800/80 space-y-1">
+                  <div className="flex items-center gap-1.5 text-xs font-mono font-semibold text-rose-400">
+                    <AlertTriangle className="w-3.5 h-3.5" />
+                    <span>T + 2–3 YEARS (The Divergence Trap)</span>
+                  </div>
+                  <p className="leading-relaxed text-zinc-300 text-xs md:text-sm pl-5">
+                    {report.timelineA.timeframe2y}
+                  </p>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-rose-950/50 border border-rose-900/60 text-rose-100 space-y-1 shadow-inner">
-                  <span className="font-bold text-rose-300 block text-[11px] uppercase tracking-wider">
-                    💀 The Final Crash (Dark Fate):
-                  </span>
-                  <p className="leading-relaxed font-medium">{report.timelineA.darkFate}</p>
+                <div className="p-4 rounded-lg bg-rose-950/30 border border-rose-900/50 space-y-1.5">
+                  <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-rose-400 uppercase tracking-wide">
+                    <Skull className="w-4 h-4 text-rose-500" />
+                    <span>YEAR 2031: THE FINAL CRASH</span>
+                  </div>
+                  <p className="leading-relaxed text-rose-200 text-xs md:text-sm font-medium">
+                    {report.timelineA.darkFate}
+                  </p>
                 </div>
               </div>
             </div>
 
-            {/* Timeline B: Target Reality */}
-            <div className="relative overflow-hidden rounded-3xl border-2 border-emerald-900/80 bg-gradient-to-b from-emerald-950/30 via-zinc-900 to-zinc-950 p-6 space-y-4 shadow-xl">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-emerald-600/20 border border-emerald-600/40 flex items-center justify-center text-emerald-400">
-                    <Trophy className="w-4 h-4" />
-                  </div>
+            {/* TIMELINE OMEGA: SOVEREIGN VICTORY */}
+            <div className="rounded-xl border-l-4 border-emerald-500 border-t border-r border-b border-emerald-900/40 bg-gradient-to-b from-emerald-950/20 via-zinc-950 to-zinc-950 p-5 md:p-6 space-y-5 shadow-lg shadow-emerald-950/20">
+              <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+                <div className="flex items-center gap-2">
+                  <Crown className="w-5 h-5 text-emerald-400" />
                   <div>
-                    <h3 className="text-sm font-black uppercase tracking-wider text-emerald-300">
-                      Timeline B: Permanent Goal Reality
+                    <h3 className="text-sm font-bold text-emerald-400 uppercase tracking-wide">
+                      Timeline Omega // Sovereign Architect
                     </h3>
-                    <span className="text-[10px] text-emerald-400/80 font-mono">Actual Potential</span>
+                    <span className="text-[11px] text-zinc-500">The realized potential &amp; conquered empire</span>
                   </div>
                 </div>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800">
-                  Ascension
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 uppercase font-semibold">
+                  Vijayi Rasta
                 </span>
               </div>
 
-              <div className="space-y-3 text-xs text-zinc-300">
-                <div className="p-3.5 rounded-2xl bg-zinc-950/80 border border-emerald-950 space-y-1">
-                  <span className="font-bold text-emerald-400 block text-[11px] uppercase tracking-wider">
-                    🏆 The Realized Vision:
-                  </span>
-                  <p className="leading-relaxed">{report.timelineB.targetVision}</p>
+              <div className="space-y-4 text-sm text-zinc-300">
+                <div className="p-3.5 rounded-lg bg-zinc-900/60 border border-zinc-800/80 space-y-1">
+                  <div className="flex items-center gap-1.5 text-xs font-mono font-semibold text-emerald-400">
+                    <Trophy className="w-3.5 h-3.5" />
+                    <span>THE REALIZED NORTH STAR</span>
+                  </div>
+                  <p className="leading-relaxed text-zinc-200 text-xs md:text-sm pl-5">
+                    {report.timelineB.targetVision}
+                  </p>
                 </div>
 
-                <div className="p-3.5 rounded-2xl bg-zinc-950/80 border border-emerald-950 space-y-1">
-                  <span className="font-bold text-emerald-400 block text-[11px] uppercase tracking-wider">
-                    ⚡ The Effort vs Reality Gap:
-                  </span>
-                  <p className="leading-relaxed">{report.timelineB.expectedReality}</p>
+                <div className="p-4 rounded-lg bg-emerald-950/30 border border-emerald-900/50 space-y-1.5">
+                  <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-emerald-400 uppercase tracking-wide">
+                    <Swords className="w-4 h-4 text-emerald-400" />
+                    <span>THE DAILY BLOOD PRICE &amp; REALITY GAP</span>
+                  </div>
+                  <p className="leading-relaxed text-emerald-200 text-xs md:text-sm">
+                    {report.timelineB.expectedReality}
+                  </p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* BLOCK B: ROOT CAUSE DIAGNOSIS (Detective Evidence Card) */}
-          <div className="rounded-3xl border border-amber-900/50 bg-zinc-900/90 p-6 md:p-7 space-y-4 shadow-xl">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
-                  <Eye className="w-4 h-4" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-black uppercase tracking-wider text-amber-300">
-                    Block B: Root Cause Diagnosis (Notes Se Asli Saboot)
+          {/* 3. ROOT CAUSE FORENSIC DIAGNOSIS */}
+          <div className="rounded-xl border border-amber-500/30 bg-zinc-900/90 p-5 md:p-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+              <div className="border-l-2 border-amber-500 pl-3">
+                <div className="flex items-center gap-2">
+                  <Eye className="w-4 h-4 text-amber-500" />
+                  <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+                    Forensic Behavioral Diagnosis // Dhoke Ka Post-Mortem
                   </h3>
-                  <p className="text-[11px] text-zinc-500">Forensic behavioral breakdown</p>
                 </div>
+                <p className="text-xs text-zinc-500 mt-0.5">Pichle sessions aur task notes se nikla direct saboot</p>
               </div>
-
-              <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30">
-                Behavioral Leak
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/30 font-semibold">
+                EVIDENCE UNMASKED
               </span>
             </div>
 
-            <div className="p-4 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-3 text-xs">
-              <div>
-                <span className="text-zinc-500 font-bold uppercase tracking-wider text-[10px] block">
-                  Core Pattern Mistake:
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-zinc-950 rounded-lg border border-zinc-800 p-4 space-y-1.5">
+                <span className="text-[10px] font-mono font-bold text-amber-400 uppercase tracking-wider block">
+                  01 // Core Delusion Pattern
                 </span>
-                <p className="text-white font-bold text-sm mt-0.5">
+                <p className="text-white font-bold text-sm leading-snug">
                   {report.rootCauseDiagnosis.coreMistake}
                 </p>
               </div>
 
-              <div className="pt-2.5 border-t border-zinc-800/80">
-                <span className="text-zinc-500 font-bold uppercase tracking-wider text-[10px] block">
-                  Notes Se Evidence (Aapke Likhe Gaye Notes Ka Sach):
+              <div className="bg-zinc-950 rounded-lg border border-amber-500/30 p-4 space-y-2 md:col-span-2">
+                <span className="text-[10px] font-mono font-bold text-amber-400 uppercase tracking-wider block">
+                  02 // Black &amp; White Notes Evidence
                 </span>
-                <p className="text-amber-200 leading-relaxed mt-1 italic bg-amber-950/20 p-2.5 rounded-xl border border-amber-950">
+                <blockquote className="border-l-2 border-amber-500 pl-3 text-amber-200/90 italic text-xs md:text-sm leading-relaxed">
                   &ldquo;{report.rootCauseDiagnosis.notesEvidence}&rdquo;
-                </p>
-              </div>
-
-              <div className="pt-2.5 border-t border-zinc-800/80">
-                <span className="text-zinc-500 font-bold uppercase tracking-wider text-[10px] block">
-                  Psychological Trigger (Dimag Yeh Chalaki Kyu Kar Raha Hai?):
-                </span>
-                <p className="text-zinc-300 leading-relaxed mt-1">
-                  {report.rootCauseDiagnosis.psychologicalTrigger}
-                </p>
+                </blockquote>
+                <div className="pt-2 border-t border-zinc-800/80">
+                  <span className="text-[10px] font-mono text-zinc-500 block uppercase">
+                    Subconscious Ego Shield:
+                  </span>
+                  <p className="text-zinc-300 text-xs leading-relaxed mt-0.5">
+                    {report.rootCauseDiagnosis.psychologicalTrigger}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* BLOCK C: PSYCHOLOGICAL TRUTH BOMB */}
-          <div className="rounded-3xl border border-indigo-900/50 bg-gradient-to-r from-indigo-950/30 via-zinc-900 to-zinc-900 p-6 md:p-7 space-y-3 shadow-xl">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-indigo-500/20 border border-indigo-500/40 flex items-center justify-center text-indigo-400">
-                <Brain className="w-4 h-4" />
+          {/* 4. PSYCHOLOGICAL TRUTH BOMB */}
+          <div className="rounded-xl border border-purple-500/30 bg-gradient-to-r from-purple-950/20 via-zinc-900 to-zinc-900 p-5 md:p-6 space-y-3">
+            <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+              <div className="border-l-2 border-purple-500 pl-3">
+                <div className="flex items-center gap-2">
+                  <Brain className="w-4 h-4 text-purple-400" />
+                  <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+                    Cognitive Depth Charge // Psychological Truth Bomb
+                  </h3>
+                </div>
               </div>
-              <h3 className="text-sm font-black uppercase tracking-wider text-indigo-300">
-                Block C: Psychological Fact / Truth Bomb
-              </h3>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/30 font-semibold">
+                UNIVERSAL LAW
+              </span>
             </div>
 
-            <div className="p-4 rounded-2xl bg-zinc-950 border border-indigo-950/60 space-y-2">
-              <h4 className="text-sm md:text-base font-black text-indigo-200">
+            <div className="bg-zinc-950/80 rounded-lg border border-zinc-800 p-4 space-y-2">
+              <span className="text-xs font-mono font-bold text-purple-300 uppercase tracking-wide block">
                 {report.psychologicalTruthBomb.conceptTitle}
-              </h4>
-              <p className="text-xs text-zinc-300 leading-relaxed">
+              </span>
+              <p className="text-sm text-zinc-300 leading-relaxed font-normal">
                 {report.psychologicalTruthBomb.explanation}
               </p>
             </div>
           </div>
 
-          {/* BLOCK D: 72-HOUR EMERGENCY PROTOCOL (Interactive Quest Style) */}
-          <div className="rounded-3xl border border-zinc-800 bg-zinc-900/90 p-6 md:p-7 space-y-4 shadow-xl">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-rose-500/20 border border-rose-500/40 flex items-center justify-center text-rose-400">
-                  <Zap className="w-4 h-4" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-black uppercase tracking-wider text-white">
-                    Block D: 72-Hour Emergency Action Plan
+          {/* 5. 72-HOUR WAR PROTOCOL */}
+          <div className="rounded-xl border border-rose-500/40 bg-zinc-900 p-5 md:p-6 space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+              <div className="border-l-2 border-rose-500 pl-3">
+                <div className="flex items-center gap-2">
+                  <Zap className="w-4 h-4 text-rose-500" />
+                  <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+                    72-Hour War Protocol // Non-Negotiable Martial Law
                   </h3>
-                  <p className="text-[11px] text-zinc-400">
-                    Agle 3 din me is trajectory ko break karne ke 3 non-negotiable rules:
-                  </p>
                 </div>
+                <p className="text-xs text-zinc-500 mt-0.5">
+                  Ye suggestions nahi hain — agle 3 din ka execution contract hai.
+                </p>
               </div>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-800 text-zinc-400">
-                Interactive Check-list
-              </span>
+
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] font-mono px-2.5 py-1 rounded bg-zinc-950 text-rose-400 border border-zinc-800">
+                  {Object.values(checkedRules).filter(Boolean).length} / {report.emergencyProtocol.length} Executed
+                </span>
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div className="space-y-3">
               {report.emergencyProtocol.map((rule, idx) => {
                 const isChecked = !!checkedRules[idx];
                 return (
                   <div
                     key={idx}
                     onClick={() => setCheckedRules((prev) => ({ ...prev, [idx]: !prev[idx] }))}
-                    className={`p-4 rounded-2xl border cursor-pointer transition-all duration-300 flex flex-col justify-between space-y-3 ${
+                    className={`flex items-start gap-3.5 p-4 rounded-lg border cursor-pointer transition-all duration-200 ${
                       isChecked
-                        ? "bg-emerald-950/30 border-emerald-600/50 shadow-lg shadow-emerald-950/20"
-                        : "bg-zinc-950 border-zinc-800/90 hover:border-zinc-700"
+                        ? "bg-zinc-950/60 border-emerald-600/40 opacity-70"
+                        : "bg-zinc-950 border-zinc-800 hover:border-zinc-700 shadow-md"
                     }`}
                   >
-                    <div className="flex items-center justify-between">
-                      <span className={`text-xs font-mono font-black ${isChecked ? "text-emerald-400" : "text-rose-400"}`}>
-                        Rule 0{idx + 1}
-                      </span>
-                      <div
-                        className={`w-5 h-5 rounded-md border flex items-center justify-center transition-colors ${
-                          isChecked
-                            ? "bg-emerald-500 border-emerald-400 text-black"
-                            : "border-zinc-700 bg-zinc-900"
-                        }`}
-                      >
-                        {isChecked && <Check className="w-3.5 h-3.5 stroke-[3]" />}
-                      </div>
-                    </div>
-
-                    <p
-                      className={`text-xs leading-relaxed font-medium transition-colors ${
-                        isChecked ? "text-zinc-400 line-through" : "text-zinc-200"
+                    <div
+                      className={`w-5 h-5 rounded border flex items-center justify-center shrink-0 mt-0.5 transition-colors ${
+                        isChecked
+                          ? "bg-emerald-500 border-emerald-400"
+                          : "border-zinc-600 bg-zinc-900"
                       }`}
                     >
-                      {rule}
-                    </p>
+                      {isChecked && <Check className="w-3.5 h-3.5 text-black stroke-[3]" />}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded ${isChecked ? "bg-emerald-500/20 text-emerald-400" : "bg-rose-500/20 text-rose-400"}`}>
+                          STRIKE {String(idx + 1).padStart(2, "0")}
+                        </span>
+                        {isChecked && (
+                          <span className="text-[10px] font-mono text-emerald-400 uppercase">
+                            // STAMPED
+                          </span>
+                        )}
+                      </div>
+                      <p className={`text-sm leading-relaxed ${isChecked ? "text-zinc-500 line-through" : "text-zinc-200 font-medium"}`}>
+                        {rule}
+                      </p>
+                    </div>
                   </div>
                 );
               })}
             </div>
           </div>
 
-          {/* BLOCK E: TRANSMISSION FROM 5-YEAR OLDER SELF (Hologram Console) */}
-          <div className="relative overflow-hidden rounded-3xl border-2 border-rose-600/60 bg-gradient-to-b from-rose-950/40 via-zinc-950 to-zinc-950 p-6 md:p-8 shadow-[0_0_50px_rgba(225,29,72,0.2)]">
-            <div className="absolute top-0 right-0 w-96 h-96 bg-rose-600/15 rounded-full blur-3xl pointer-events-none" />
-
-            <div className="relative z-10 space-y-5">
-              <div className="flex items-center justify-between border-b border-rose-900/40 pb-3">
-                <div className="flex items-center gap-2.5">
-                  <Radio className="w-5 h-5 text-rose-400 animate-pulse" />
-                  <h3 className="text-sm md:text-base font-black uppercase tracking-widest text-rose-300">
-                    Block E: Incoming Hologram from Year 2031
-                  </h3>
+          {/* 6. INTERCEPTED BLACKBOX TRANSMISSION FROM YEAR 2031 */}
+          <div className="relative overflow-hidden rounded-xl border border-rose-900/60 bg-gradient-to-b from-rose-950/30 via-zinc-950 to-black p-6 md:p-7 space-y-5 shadow-2xl shadow-rose-950/30">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-800/80 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping" />
+                  <Radio className="w-4 h-4 text-rose-500" />
                 </div>
-                <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30">
-                  Unfiltered Regret Letter
-                </span>
+                <div>
+                  <h3 className="text-xs font-mono font-bold text-rose-400 uppercase tracking-widest">
+                    [CLASSIFIED AUDIO-LOG FREQUENCY // YEAR 2031]
+                  </h3>
+                  <span className="text-[10px] font-mono text-zinc-500">TIMELINE ALPHA // RECOVERED BLACKBOX</span>
+                </div>
               </div>
 
-              <div className="relative p-5 md:p-7 rounded-2xl bg-black/70 border border-rose-900/40 shadow-inner">
-                <span className="text-4xl text-rose-500/30 font-serif leading-none select-none block -mb-2">
-                  &ldquo;
-                </span>
-                <p className="text-sm md:text-base text-rose-100 font-sans leading-relaxed tracking-wide whitespace-pre-line italic">
-                  {report.futureSelfMessage}
-                </p>
-                <span className="text-4xl text-rose-500/30 font-serif leading-none select-none block text-right -mt-2">
-                  &rdquo;
-                </span>
-              </div>
-
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between text-[11px] text-zinc-500 gap-2 pt-1 font-mono">
-                <span>⚠️ Reality Warning: This timeline is currently actively assembling from your daily habits.</span>
-                <span className="text-rose-400 font-bold">Focos Future Mirror</span>
+              {/* Audio Waveform Effect */}
+              <div className="flex items-center gap-1 h-5 px-3 py-1 rounded bg-zinc-900/80 border border-zinc-800">
+                <Volume2 className="w-3.5 h-3.5 text-rose-500 mr-1" />
+                {[4, 14, 8, 18, 10, 16, 6, 20, 12, 8, 15, 6].map((h, i) => (
+                  <span
+                    key={i}
+                    className="w-0.5 bg-rose-500 rounded-full animate-pulse"
+                    style={{ height: `${h}px`, animationDelay: `${i * 90}ms` }}
+                  />
+                ))}
               </div>
             </div>
+
+            <div className="p-4 md:p-5 rounded-lg bg-zinc-950/80 border border-rose-950/60">
+              <p className="text-zinc-200 text-sm md:text-base leading-relaxed whitespace-pre-line font-serif italic selection:bg-rose-900">
+                {report.futureSelfMessage}
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs text-zinc-600 gap-2 font-mono pt-1 border-t border-zinc-900">
+              <span className="flex items-center gap-1.5 text-zinc-500">
+                <AlertTriangle className="w-3.5 h-3.5 text-amber-500" />
+                <span>Har ek unrecorded session aur comfort excuse is timeline ko confirm kar raha hai.</span>
+              </span>
+              <span className="text-rose-500 font-bold uppercase tracking-wider">
+                Focos Time-Mirror
+              </span>
+            </div>
           </div>
+
+          {/* 7. THE COMMITMENT SEAL: ENTER WAR MODE */}
+          <div className="p-6 md:p-8 rounded-xl border border-zinc-800 bg-gradient-to-r from-zinc-900 via-zinc-950 to-zinc-900 text-center space-y-4">
+            {warModePledged ? (
+              <div className="space-y-2 py-2">
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/40 text-emerald-400 font-mono text-xs font-bold uppercase tracking-wider">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  <span>WAR PROTOCOL LOCKED IN // EXCUSES ARE DEAD</span>
+                </div>
+                <p className="text-zinc-300 text-sm max-w-md mx-auto">
+                  Aapne War Protocol accept kar liya hai. Agle 72 ghante sirf cold, focused execution. Shut down notifications and begin.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <div>
+                  <h4 className="text-base font-bold text-white flex items-center justify-center gap-2">
+                    <Swords className="w-4 h-4 text-amber-500" />
+                    <span>Seal The Truth &amp; Enter War Mode</span>
+                  </h4>
+                  <p className="text-xs text-zinc-400 mt-1 max-w-md mx-auto">
+                    Is report ko scroll karke bhool mat jaao. Apna commitment seal karo aur agle 72-Hour Non-Negotiable Protocol ko swear karo.
+                  </p>
+                </div>
+                <button
+                  onClick={() => setWarModePledged(true)}
+                  className="inline-flex items-center gap-2 px-7 py-3 rounded-lg bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-400 hover:to-rose-500 text-black font-black text-xs uppercase tracking-wider transition-all transform active:scale-95 shadow-xl shadow-rose-950/40"
+                >
+                  <Zap className="w-4 h-4 text-black fill-current" />
+                  <span>I Accept The Brutal Truth &amp; Enter War Mode</span>
+                </button>
+              </div>
+            )}
+          </div>
+
         </div>
       )}
     </div>
