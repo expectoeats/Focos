@@ -10,29 +10,12 @@ import {
   Trophy,
   Crown,
   Skull,
-  ShieldCheck,
-  Compass,
-  ArrowRight,
   CheckCircle2,
   Calendar,
   Hourglass,
-  Brain,
-  Zap,
-  Radio,
   Settings,
   ShieldAlert,
-  HelpCircle,
-  Eye,
-  Rocket,
   Check,
-  Swords,
-  Activity,
-  Terminal,
-  Volume2,
-  Lock,
-  Crosshair,
-  TrendingDown,
-  TrendingUp,
 } from "lucide-react";
 
 interface PermanentGoal {
@@ -591,350 +574,280 @@ export default function GoalsPage() {
         )}
       </div>
 
-      {/* SECTION 4: ANALYSIS REPORT */}
+      {/* SECTION 4: ANALYSIS REPORT (MINIMALIST LUXURY ARCHITECTURE) */}
       {report && (
-        <div id="analysis-report-section" className="space-y-6 pt-2">
+        <div id="analysis-report-section" className="space-y-6 pt-4">
 
-          {/* 1. HERO REALITY DECREE & TELEMETRY COMMAND BAR */}
-          <div className="relative overflow-hidden rounded-xl border border-rose-500/40 bg-gradient-to-b from-rose-950/40 via-zinc-900 to-zinc-950 p-6 md:p-8 shadow-2xl shadow-rose-950/40">
-            <div className="absolute top-0 right-0 w-96 h-96 bg-rose-600/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
-            
-            <div className="relative z-10 flex flex-col gap-6">
-              {/* Top Status Bar */}
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-800/80 pb-4">
-                <div className="flex items-center gap-2.5">
-                  <span className="relative flex h-3 w-3">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-3 w-3 bg-rose-500"></span>
-                  </span>
-                  <span className="text-[11px] font-mono tracking-widest uppercase font-bold text-rose-400 flex items-center gap-1.5">
-                    <Crosshair className="w-3.5 h-3.5" />
-                    <span>Omniscient Time-Architect // Strict Reality Verdict</span>
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <span className={`text-[10px] font-mono font-bold px-2.5 py-1 rounded border ${defconStatus.badge}`}>
-                    {defconStatus.label}
-                  </span>
-                  {report.totalSessionsAnalyzed !== undefined && (
-                    <span className="text-[10px] font-mono px-2 py-1 rounded bg-zinc-800/80 text-zinc-400 border border-zinc-700">
-                      {report.totalSessionsAnalyzed} SESSIONS SCANNED
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              {/* Coach Verdict Decree */}
-              <div className="space-y-2">
-                <span className="text-[11px] font-mono font-semibold tracking-wider text-zinc-500 uppercase flex items-center gap-1.5">
-                  <Activity className="w-3.5 h-3.5 text-rose-500" />
-                  <span>The Unfiltered Reality Decree</span>
+          {/* 1. HERO REALITY DECREE & EXECUTIVE TELEMETRY */}
+          <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-6 md:p-8 space-y-6">
+            {/* Minimalist Top Meta */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-800/80 pb-4 text-xs font-mono text-zinc-500">
+              <div className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+                <span className="tracking-wider uppercase font-medium text-zinc-400">
+                  Reality Engine // Strict Mode Audit
                 </span>
-                <h2 className="text-xl md:text-2xl font-black text-white tracking-tight leading-snug">
-                  &ldquo;{report.coachVerdict || report.rootCauseDiagnosis.coreMistake}&rdquo;
-                </h2>
+              </div>
+              <div className="flex items-center gap-3">
+                {report.totalSessionsAnalyzed !== undefined && (
+                  <span>{report.totalSessionsAnalyzed} sessions audited</span>
+                )}
+                <span>·</span>
+                <span className={drift > 65 ? "text-rose-400" : drift > 35 ? "text-amber-400" : "text-emerald-400"}>
+                  {defconStatus.label}
+                </span>
+              </div>
+            </div>
+
+            {/* The Unflinching Reality Decree */}
+            <div className="space-y-2 max-w-3xl">
+              <span className="text-[11px] font-mono uppercase tracking-widest text-zinc-500 block">
+                The Core Verdict
+              </span>
+              <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold text-white tracking-tight leading-snug">
+                {report.coachVerdict || report.rootCauseDiagnosis.coreMistake}
+              </h2>
+            </div>
+
+            {/* Minimal Executive Ledger Metrics */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-zinc-800/80 rounded-lg overflow-hidden border border-zinc-800/80">
+              <div className="bg-zinc-950 p-4 space-y-1">
+                <span className="text-[11px] font-mono text-zinc-500 uppercase tracking-wider block">
+                  Survival Probability
+                </span>
+                <div className="flex items-baseline gap-2">
+                  <span className={`text-2xl font-mono font-bold ${survival < 35 ? "text-rose-400" : survival < 65 ? "text-amber-400" : "text-emerald-400"}`}>
+                    {survival}%
+                  </span>
+                  <span className="text-xs text-zinc-500">
+                    {survival < 35 ? "Critical risk" : survival < 65 ? "Borderline" : "Aligned"}
+                  </span>
+                </div>
               </div>
 
-              {/* Telemetry Metric Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-2">
-                {/* Survival Probability */}
-                <div className={`p-4 rounded-lg border ${survivalColor.border} bg-zinc-950/80 flex items-center justify-between`}>
-                  <div>
-                    <span className="text-[10px] uppercase font-mono tracking-wider text-zinc-500 block">
-                      Survival Probability
-                    </span>
-                    <span className={`text-xs font-semibold ${survivalColor.text} block mt-0.5`}>
-                      {survivalColor.label}
-                    </span>
-                  </div>
-                  <div className="text-right">
-                    <span className={`text-2xl font-black font-mono ${survivalColor.text}`}>
-                      {survival}%
-                    </span>
-                  </div>
+              <div className="bg-zinc-950 p-4 space-y-1">
+                <span className="text-[11px] font-mono text-zinc-500 uppercase tracking-wider block">
+                  Habit Drift Index
+                </span>
+                <div className="flex items-baseline gap-2">
+                  <span className={`text-2xl font-mono font-bold ${drift > 65 ? "text-rose-400" : drift > 35 ? "text-amber-400" : "text-emerald-400"}`}>
+                    {drift}%
+                  </span>
+                  <span className="text-xs text-zinc-500">
+                    {drift > 65 ? "Severe deviation" : drift > 35 ? "Moderate" : "On track"}
+                  </span>
                 </div>
+              </div>
 
-                {/* Goal Drift Gauge */}
-                <div className={`p-4 rounded-lg border ${driftColor.border} bg-zinc-950/80 flex items-center justify-between`}>
-                  <div>
-                    <span className="text-[10px] uppercase font-mono tracking-wider text-zinc-500 block">
-                      Timeline Drift Index
-                    </span>
-                    <span className={`text-xs font-semibold ${driftColor.text} block mt-0.5`}>
-                      {driftColor.label}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className={`text-2xl font-black font-mono ${driftColor.text}`}>
-                      {drift}%
-                    </span>
-                    <div className="relative w-8 h-8 flex items-center justify-center">
-                      <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
-                        <path
-                          className="text-zinc-800"
-                          strokeWidth="4"
-                          stroke="currentColor"
-                          fill="none"
-                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                        />
-                        <path
-                          stroke={driftColor.stroke}
-                          strokeDasharray={`${drift}, 100`}
-                          strokeLinecap="round"
-                          strokeWidth="4"
-                          fill="none"
-                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Trajectory Vector */}
-                <div className="p-4 rounded-lg border border-zinc-800 bg-zinc-950/80 flex items-center justify-between sm:col-span-2 lg:col-span-1">
-                  <div>
-                    <span className="text-[10px] uppercase font-mono tracking-wider text-zinc-500 block">
-                      Trajectory Vector
-                    </span>
-                    <span className="text-xs font-semibold text-zinc-300 block mt-0.5">
-                      {drift > 50 ? "Decaying to Timeline Alpha" : "Climbing to Timeline Omega"}
-                    </span>
-                  </div>
-                  <div>
-                    {drift > 50 ? (
-                      <TrendingDown className="w-6 h-6 text-rose-500" />
-                    ) : (
-                      <TrendingUp className="w-6 h-6 text-emerald-400" />
-                    )}
-                  </div>
+              <div className="bg-zinc-950 p-4 space-y-1">
+                <span className="text-[11px] font-mono text-zinc-500 uppercase tracking-wider block">
+                  Trajectory Vector
+                </span>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-sm font-medium text-zinc-200">
+                    {drift > 50 ? "Default Collapse (Timeline A)" : "Sovereign Target (Timeline B)"}
+                  </span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* 2. DUAL TIMELINE: MULTIVERSE DIVERGENCE */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {/* 2. DUAL TIMELINE: COMPARATIVE LEDGER */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
-            {/* TIMELINE ALPHA: THE DEFAULT CRASH */}
-            <div className="rounded-xl border-l-4 border-rose-600 border-t border-r border-b border-rose-900/40 bg-gradient-to-b from-rose-950/20 via-zinc-950 to-zinc-950 p-5 md:p-6 space-y-5 shadow-lg shadow-rose-950/20">
-              <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+            {/* TIMELINE A: THE DEFAULT DRIFT */}
+            <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-6 space-y-5">
+              <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
                 <div className="flex items-center gap-2">
-                  <Skull className="w-5 h-5 text-rose-500" />
-                  <div>
-                    <h3 className="text-sm font-bold text-rose-400 uppercase tracking-wide">
-                      Timeline Alpha // Default Entropy
-                    </h3>
-                    <span className="text-[11px] text-zinc-500">Agar daily excuses aur comfort nahi chhute</span>
-                  </div>
+                  <span className="w-2 h-2 rounded-full bg-rose-500" />
+                  <h3 className="text-xs font-mono font-semibold text-zinc-300 uppercase tracking-wider">
+                    Timeline A — The Default Drift
+                  </h3>
                 </div>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-rose-500/10 text-rose-400 border border-rose-500/30 uppercase font-semibold">
-                  Maut Ka Rasta
+                <span className="text-[11px] font-mono text-rose-400/90">
+                  Zero habit change
                 </span>
               </div>
 
-              <div className="space-y-4 text-sm text-zinc-300">
-                <div className="p-3.5 rounded-lg bg-zinc-900/60 border border-zinc-800/80 space-y-1">
-                  <div className="flex items-center gap-1.5 text-xs font-mono font-semibold text-rose-400">
-                    <Hourglass className="w-3.5 h-3.5" />
-                    <span>T + 6 MONTHS (Compounding Stagnation)</span>
-                  </div>
-                  <p className="leading-relaxed text-zinc-300 text-xs md:text-sm pl-5">
+              <div className="space-y-4 text-sm">
+                <div className="space-y-1">
+                  <span className="text-[11px] font-mono text-zinc-500 uppercase tracking-wide">
+                    Next 6 Months
+                  </span>
+                  <p className="text-zinc-300 leading-relaxed text-sm">
                     {report.timelineA.timeframe6m}
                   </p>
                 </div>
 
-                <div className="p-3.5 rounded-lg bg-zinc-900/60 border border-zinc-800/80 space-y-1">
-                  <div className="flex items-center gap-1.5 text-xs font-mono font-semibold text-rose-400">
-                    <AlertTriangle className="w-3.5 h-3.5" />
-                    <span>T + 2–3 YEARS (The Divergence Trap)</span>
-                  </div>
-                  <p className="leading-relaxed text-zinc-300 text-xs md:text-sm pl-5">
+                <div className="space-y-1 pt-3 border-t border-zinc-800/60">
+                  <span className="text-[11px] font-mono text-zinc-500 uppercase tracking-wide">
+                    Next 2–3 Years
+                  </span>
+                  <p className="text-zinc-300 leading-relaxed text-sm">
                     {report.timelineA.timeframe2y}
                   </p>
                 </div>
 
-                <div className="p-4 rounded-lg bg-rose-950/30 border border-rose-900/50 space-y-1.5">
-                  <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-rose-400 uppercase tracking-wide">
-                    <Skull className="w-4 h-4 text-rose-500" />
-                    <span>YEAR 2031: THE FINAL CRASH</span>
-                  </div>
-                  <p className="leading-relaxed text-rose-200 text-xs md:text-sm font-medium">
+                <div className="space-y-1 pt-3 border-t border-zinc-800/60">
+                  <span className="text-[11px] font-mono text-rose-400 uppercase tracking-wide">
+                    Year 2031 — The Terminal State
+                  </span>
+                  <p className="text-zinc-300 leading-relaxed text-sm">
                     {report.timelineA.darkFate}
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* TIMELINE OMEGA: SOVEREIGN VICTORY */}
-            <div className="rounded-xl border-l-4 border-emerald-500 border-t border-r border-b border-emerald-900/40 bg-gradient-to-b from-emerald-950/20 via-zinc-950 to-zinc-950 p-5 md:p-6 space-y-5 shadow-lg shadow-emerald-950/20">
-              <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+            {/* TIMELINE B: THE SOVEREIGN POTENTIAL */}
+            <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-6 space-y-5">
+              <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
                 <div className="flex items-center gap-2">
-                  <Crown className="w-5 h-5 text-emerald-400" />
-                  <div>
-                    <h3 className="text-sm font-bold text-emerald-400 uppercase tracking-wide">
-                      Timeline Omega // Sovereign Architect
-                    </h3>
-                    <span className="text-[11px] text-zinc-500">The realized potential &amp; conquered empire</span>
-                  </div>
+                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                  <h3 className="text-xs font-mono font-semibold text-zinc-300 uppercase tracking-wider">
+                    Timeline B — The Sovereign Target
+                  </h3>
                 </div>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 uppercase font-semibold">
-                  Vijayi Rasta
+                <span className="text-[11px] font-mono text-emerald-400/90">
+                  Full potential realized
                 </span>
               </div>
 
-              <div className="space-y-4 text-sm text-zinc-300">
-                <div className="p-3.5 rounded-lg bg-zinc-900/60 border border-zinc-800/80 space-y-1">
-                  <div className="flex items-center gap-1.5 text-xs font-mono font-semibold text-emerald-400">
-                    <Trophy className="w-3.5 h-3.5" />
-                    <span>THE REALIZED NORTH STAR</span>
-                  </div>
-                  <p className="leading-relaxed text-zinc-200 text-xs md:text-sm pl-5">
+              <div className="space-y-4 text-sm">
+                <div className="space-y-1">
+                  <span className="text-[11px] font-mono text-zinc-500 uppercase tracking-wide">
+                    The Realized Vision
+                  </span>
+                  <p className="text-zinc-300 leading-relaxed text-sm">
                     {report.timelineB.targetVision}
                   </p>
                 </div>
 
-                <div className="p-4 rounded-lg bg-emerald-950/30 border border-emerald-900/50 space-y-1.5">
-                  <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-emerald-400 uppercase tracking-wide">
-                    <Swords className="w-4 h-4 text-emerald-400" />
-                    <span>THE DAILY BLOOD PRICE &amp; REALITY GAP</span>
-                  </div>
-                  <p className="leading-relaxed text-emerald-200 text-xs md:text-sm">
+                <div className="space-y-1 pt-3 border-t border-zinc-800/60">
+                  <span className="text-[11px] font-mono text-emerald-400 uppercase tracking-wide">
+                    The Daily Standard Required
+                  </span>
+                  <p className="text-zinc-300 leading-relaxed text-sm">
                     {report.timelineB.expectedReality}
                   </p>
                 </div>
               </div>
             </div>
+
           </div>
 
-          {/* 3. ROOT CAUSE FORENSIC DIAGNOSIS */}
-          <div className="rounded-xl border border-amber-500/30 bg-zinc-900/90 p-5 md:p-6 space-y-4">
-            <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
-              <div className="border-l-2 border-amber-500 pl-3">
-                <div className="flex items-center gap-2">
-                  <Eye className="w-4 h-4 text-amber-500" />
-                  <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-                    Forensic Behavioral Diagnosis // Dhoke Ka Post-Mortem
-                  </h3>
-                </div>
-                <p className="text-xs text-zinc-500 mt-0.5">Pichle sessions aur task notes se nikla direct saboot</p>
-              </div>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/30 font-semibold">
-                EVIDENCE UNMASKED
-              </span>
-            </div>
+          {/* 3. FORENSIC DIAGNOSIS & PSYCHOLOGICAL INSIGHT */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-zinc-950 rounded-lg border border-zinc-800 p-4 space-y-1.5">
-                <span className="text-[10px] font-mono font-bold text-amber-400 uppercase tracking-wider block">
-                  01 // Core Delusion Pattern
+            {/* Forensic Root Cause */}
+            <div className="lg:col-span-2 rounded-xl border border-zinc-800 bg-zinc-950 p-6 space-y-4">
+              <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
+                <h3 className="text-xs font-mono font-semibold text-zinc-300 uppercase tracking-wider">
+                  Behavioral Forensic Audit
+                </h3>
+                <span className="text-[11px] font-mono text-zinc-500">
+                  From logged task notes
                 </span>
-                <p className="text-white font-bold text-sm leading-snug">
-                  {report.rootCauseDiagnosis.coreMistake}
-                </p>
               </div>
 
-              <div className="bg-zinc-950 rounded-lg border border-amber-500/30 p-4 space-y-2 md:col-span-2">
-                <span className="text-[10px] font-mono font-bold text-amber-400 uppercase tracking-wider block">
-                  02 // Black &amp; White Notes Evidence
-                </span>
-                <blockquote className="border-l-2 border-amber-500 pl-3 text-amber-200/90 italic text-xs md:text-sm leading-relaxed">
-                  &ldquo;{report.rootCauseDiagnosis.notesEvidence}&rdquo;
-                </blockquote>
-                <div className="pt-2 border-t border-zinc-800/80">
-                  <span className="text-[10px] font-mono text-zinc-500 block uppercase">
-                    Subconscious Ego Shield:
+              <div className="space-y-3.5">
+                <div>
+                  <span className="text-[11px] font-mono text-zinc-500 uppercase block mb-1">
+                    Primary Behavioral Trap
                   </span>
-                  <p className="text-zinc-300 text-xs leading-relaxed mt-0.5">
+                  <p className="text-white font-medium text-sm">
+                    {report.rootCauseDiagnosis.coreMistake}
+                  </p>
+                </div>
+
+                <div className="pt-3 border-t border-zinc-800/60">
+                  <span className="text-[11px] font-mono text-zinc-500 uppercase block mb-1.5">
+                    Evidence From Notes
+                  </span>
+                  <p className="text-zinc-300 text-sm italic pl-3 border-l border-zinc-700 leading-relaxed">
+                    &ldquo;{report.rootCauseDiagnosis.notesEvidence}&rdquo;
+                  </p>
+                </div>
+
+                <div className="pt-3 border-t border-zinc-800/60">
+                  <span className="text-[11px] font-mono text-zinc-500 uppercase block mb-1">
+                    Subconscious Ego Defense
+                  </span>
+                  <p className="text-zinc-400 text-sm leading-relaxed">
                     {report.rootCauseDiagnosis.psychologicalTrigger}
                   </p>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* 4. PSYCHOLOGICAL TRUTH BOMB */}
-          <div className="rounded-xl border border-purple-500/30 bg-gradient-to-r from-purple-950/20 via-zinc-900 to-zinc-900 p-5 md:p-6 space-y-3">
-            <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
-              <div className="border-l-2 border-purple-500 pl-3">
-                <div className="flex items-center gap-2">
-                  <Brain className="w-4 h-4 text-purple-400" />
-                  <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-                    Cognitive Depth Charge // Psychological Truth Bomb
+            {/* Truth Bomb */}
+            <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-6 space-y-4 flex flex-col justify-between">
+              <div className="space-y-3">
+                <div className="border-b border-zinc-800/80 pb-3">
+                  <h3 className="text-xs font-mono font-semibold text-zinc-300 uppercase tracking-wider">
+                    Cognitive Principle
                   </h3>
+                </div>
+                <div className="space-y-1.5">
+                  <span className="text-xs font-semibold text-white block">
+                    {report.psychologicalTruthBomb.conceptTitle}
+                  </span>
+                  <p className="text-zinc-400 text-sm leading-relaxed">
+                    {report.psychologicalTruthBomb.explanation}
+                  </p>
                 </div>
               </div>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/30 font-semibold">
-                UNIVERSAL LAW
-              </span>
+
+              <div className="text-[11px] font-mono text-zinc-600 pt-3 border-t border-zinc-800/60">
+                Behavioral Science Principle
+              </div>
             </div>
 
-            <div className="bg-zinc-950/80 rounded-lg border border-zinc-800 p-4 space-y-2">
-              <span className="text-xs font-mono font-bold text-purple-300 uppercase tracking-wide block">
-                {report.psychologicalTruthBomb.conceptTitle}
-              </span>
-              <p className="text-sm text-zinc-300 leading-relaxed font-normal">
-                {report.psychologicalTruthBomb.explanation}
-              </p>
-            </div>
           </div>
 
-          {/* 5. 72-HOUR WAR PROTOCOL */}
-          <div className="rounded-xl border border-rose-500/40 bg-zinc-900 p-5 md:p-6 space-y-4">
-            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-800 pb-3">
-              <div className="border-l-2 border-rose-500 pl-3">
-                <div className="flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-rose-500" />
-                  <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-                    72-Hour War Protocol // Non-Negotiable Martial Law
-                  </h3>
-                </div>
+          {/* 4. 72-HOUR WAR PROTOCOL */}
+          <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
+              <div>
+                <h3 className="text-xs font-mono font-semibold text-zinc-300 uppercase tracking-wider">
+                  72-Hour Non-Negotiable Protocol
+                </h3>
                 <p className="text-xs text-zinc-500 mt-0.5">
-                  Ye suggestions nahi hain — agle 3 din ka execution contract hai.
+                  Mandatory execution contract for the next 3 days.
                 </p>
               </div>
-
-              <div className="flex items-center gap-2">
-                <span className="text-[11px] font-mono px-2.5 py-1 rounded bg-zinc-950 text-rose-400 border border-zinc-800">
-                  {Object.values(checkedRules).filter(Boolean).length} / {report.emergencyProtocol.length} Executed
-                </span>
-              </div>
+              <span className="text-xs font-mono text-zinc-400">
+                {Object.values(checkedRules).filter(Boolean).length} of {report.emergencyProtocol.length} completed
+              </span>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               {report.emergencyProtocol.map((rule, idx) => {
                 const isChecked = !!checkedRules[idx];
                 return (
                   <div
                     key={idx}
                     onClick={() => setCheckedRules((prev) => ({ ...prev, [idx]: !prev[idx] }))}
-                    className={`flex items-start gap-3.5 p-4 rounded-lg border cursor-pointer transition-all duration-200 ${
+                    className={`flex items-start gap-3.5 p-3.5 rounded-lg border transition-all cursor-pointer ${
                       isChecked
-                        ? "bg-zinc-950/60 border-emerald-600/40 opacity-70"
-                        : "bg-zinc-950 border-zinc-800 hover:border-zinc-700 shadow-md"
+                        ? "bg-zinc-900/40 border-zinc-800/50 opacity-60"
+                        : "bg-zinc-900/60 border-zinc-800 hover:border-zinc-700"
                     }`}
                   >
                     <div
-                      className={`w-5 h-5 rounded border flex items-center justify-center shrink-0 mt-0.5 transition-colors ${
+                      className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 mt-0.5 transition-colors ${
                         isChecked
-                          ? "bg-emerald-500 border-emerald-400"
-                          : "border-zinc-600 bg-zinc-900"
+                          ? "bg-zinc-200 border-zinc-200 text-black"
+                          : "border-zinc-700 bg-zinc-900"
                       }`}
                     >
-                      {isChecked && <Check className="w-3.5 h-3.5 text-black stroke-[3]" />}
+                      {isChecked && <Check className="w-3 h-3 text-black stroke-[3]" />}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded ${isChecked ? "bg-emerald-500/20 text-emerald-400" : "bg-rose-500/20 text-rose-400"}`}>
-                          STRIKE {String(idx + 1).padStart(2, "0")}
-                        </span>
-                        {isChecked && (
-                          <span className="text-[10px] font-mono text-emerald-400 uppercase">
-                            // STAMPED
-                          </span>
-                        )}
-                      </div>
-                      <p className={`text-sm leading-relaxed ${isChecked ? "text-zinc-500 line-through" : "text-zinc-200 font-medium"}`}>
+                      <span className="text-[10px] font-mono text-zinc-500 block mb-0.5">
+                        Protocol 0{idx + 1}
+                      </span>
+                      <p className={`text-sm leading-relaxed ${isChecked ? "text-zinc-500 line-through" : "text-zinc-200"}`}>
                         {rule}
                       </p>
                     </div>
@@ -944,81 +857,56 @@ export default function GoalsPage() {
             </div>
           </div>
 
-          {/* 6. INTERCEPTED BLACKBOX TRANSMISSION FROM YEAR 2031 */}
-          <div className="relative overflow-hidden rounded-xl border border-rose-900/60 bg-gradient-to-b from-rose-950/30 via-zinc-950 to-black p-6 md:p-7 space-y-5 shadow-2xl shadow-rose-950/30">
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-800/80 pb-4">
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping" />
-                  <Radio className="w-4 h-4 text-rose-500" />
-                </div>
-                <div>
-                  <h3 className="text-xs font-mono font-bold text-rose-400 uppercase tracking-widest">
-                    [CLASSIFIED AUDIO-LOG FREQUENCY // YEAR 2031]
-                  </h3>
-                  <span className="text-[10px] font-mono text-zinc-500">TIMELINE ALPHA // RECOVERED BLACKBOX</span>
-                </div>
+          {/* 5. A LETTER FROM YEAR 2031 (INTIMATE, UNBROKEN DOCUMENT) */}
+          <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-6 md:p-8 space-y-5">
+            <div className="border-b border-zinc-800/80 pb-4 flex items-center justify-between">
+              <div>
+                <h3 className="text-sm font-semibold text-white tracking-tight">
+                  A Letter from Year 2031
+                </h3>
+                <p className="text-xs text-zinc-500 mt-0.5">
+                  Written from the default timeline you are assembling right now.
+                </p>
               </div>
-
-              {/* Audio Waveform Effect */}
-              <div className="flex items-center gap-1 h-5 px-3 py-1 rounded bg-zinc-900/80 border border-zinc-800">
-                <Volume2 className="w-3.5 h-3.5 text-rose-500 mr-1" />
-                {[4, 14, 8, 18, 10, 16, 6, 20, 12, 8, 15, 6].map((h, i) => (
-                  <span
-                    key={i}
-                    className="w-0.5 bg-rose-500 rounded-full animate-pulse"
-                    style={{ height: `${h}px`, animationDelay: `${i * 90}ms` }}
-                  />
-                ))}
-              </div>
+              <span className="text-[11px] font-mono text-zinc-600">
+                Timeline Alpha
+              </span>
             </div>
 
-            <div className="p-4 md:p-5 rounded-lg bg-zinc-950/80 border border-rose-950/60">
-              <p className="text-zinc-200 text-sm md:text-base leading-relaxed whitespace-pre-line font-serif italic selection:bg-rose-900">
+            <div className="max-w-2xl py-2">
+              <p className="text-zinc-300 text-sm md:text-base leading-relaxed whitespace-pre-line font-normal">
                 {report.futureSelfMessage}
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs text-zinc-600 gap-2 font-mono pt-1 border-t border-zinc-900">
-              <span className="flex items-center gap-1.5 text-zinc-500">
-                <AlertTriangle className="w-3.5 h-3.5 text-amber-500" />
-                <span>Har ek unrecorded session aur comfort excuse is timeline ko confirm kar raha hai.</span>
-              </span>
-              <span className="text-rose-500 font-bold uppercase tracking-wider">
-                Focos Time-Mirror
-              </span>
+            <div className="pt-4 border-t border-zinc-800/80 flex items-center justify-between text-xs font-mono text-zinc-600">
+              <span>Every session you skip or fake confirms this trajectory.</span>
+              <span className="text-zinc-500">Focos Reality Mirror</span>
             </div>
           </div>
 
-          {/* 7. THE COMMITMENT SEAL: ENTER WAR MODE */}
-          <div className="p-6 md:p-8 rounded-xl border border-zinc-800 bg-gradient-to-r from-zinc-900 via-zinc-950 to-zinc-900 text-center space-y-4">
+          {/* 6. COMMITMENT SEAL */}
+          <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-6 text-center space-y-3">
             {warModePledged ? (
-              <div className="space-y-2 py-2">
-                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/40 text-emerald-400 font-mono text-xs font-bold uppercase tracking-wider">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                  <span>WAR PROTOCOL LOCKED IN // EXCUSES ARE DEAD</span>
-                </div>
-                <p className="text-zinc-300 text-sm max-w-md mx-auto">
-                  Aapne War Protocol accept kar liya hai. Agle 72 ghante sirf cold, focused execution. Shut down notifications and begin.
+              <div className="space-y-1.5 py-1">
+                <span className="inline-flex items-center gap-1.5 text-xs font-mono font-medium text-emerald-400">
+                  <CheckCircle2 className="w-4 h-4" />
+                  <span>Protocol Active · Excuses Suspended</span>
+                </span>
+                <p className="text-xs text-zinc-400 max-w-sm mx-auto">
+                  Aapne protocol commit kar liya hai. Agle 72 hours cold execution.
                 </p>
               </div>
             ) : (
               <div className="space-y-3">
-                <div>
-                  <h4 className="text-base font-bold text-white flex items-center justify-center gap-2">
-                    <Swords className="w-4 h-4 text-amber-500" />
-                    <span>Seal The Truth &amp; Enter War Mode</span>
-                  </h4>
-                  <p className="text-xs text-zinc-400 mt-1 max-w-md mx-auto">
-                    Is report ko scroll karke bhool mat jaao. Apna commitment seal karo aur agle 72-Hour Non-Negotiable Protocol ko swear karo.
-                  </p>
-                </div>
+                <p className="text-xs text-zinc-400 max-w-md mx-auto">
+                  Report padhna asaan hai, follow karna mushkil. Commit to the 72-hour protocol now.
+                </p>
                 <button
                   onClick={() => setWarModePledged(true)}
-                  className="inline-flex items-center gap-2 px-7 py-3 rounded-lg bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-400 hover:to-rose-500 text-black font-black text-xs uppercase tracking-wider transition-all transform active:scale-95 shadow-xl shadow-rose-950/40"
+                  className="px-5 py-2.5 rounded-lg bg-zinc-100 hover:bg-white text-zinc-950 font-semibold text-xs transition-all shadow-sm active:scale-98"
                 >
-                  <Zap className="w-4 h-4 text-black fill-current" />
-                  <span>I Accept The Brutal Truth &amp; Enter War Mode</span>
+                  Commit to 72-Hour Protocol
                 </button>
               </div>
             )}
